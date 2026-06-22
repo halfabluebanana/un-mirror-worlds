@@ -148,7 +148,12 @@ type InputMode = 'demo' | 'url' | 'text';
               <div><dt>Indicators</dt><dd>{{ activeClaim.declared_indicators.length }} detected</dd></div>
             </dl>
             <div class="chip-row">
-              <span class="chip" *ngFor="let sdg of activeClaim.sdgs">SDG {{ sdg.goal }}</span>
+              <span
+                class="chip"
+                *ngFor="let sdg of activeClaim.sdgs"
+                [style.background]="sdgColor(sdg.goal)"
+                [style.color]="sdgTextColor(sdg.goal)"
+              >SDG {{ sdg.goal }} · {{ sdg.name }}</span>
             </div>
             <ul class="indicator-list" *ngIf="activeClaim.declared_indicators.length">
               <li
@@ -212,7 +217,7 @@ type InputMode = 'demo' | 'url' | 'text';
       .claim-card {
         background: var(--panel);
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 0;
         padding: 1.25rem;
       }
 
@@ -225,24 +230,26 @@ type InputMode = 'demo' | 'url' | 'text';
 
       .tab {
         border: 1px solid var(--border);
-        background: #fff;
+        background: var(--bg);
         color: var(--ink);
-        border-radius: 8px;
+        border-radius: 0;
         padding: 0.5rem 0.65rem;
-        font-weight: 600;
+        font-weight: 700;
+        font-family: inherit;
         margin-top: 0;
+        letter-spacing: 0.02em;
       }
 
       .tab.active {
-        background: var(--ink);
+        background: var(--accent);
         color: #fff;
-        border-color: var(--ink);
+        border-color: var(--accent);
       }
 
       label {
         display: block;
         margin-bottom: 0.45rem;
-        font-weight: 600;
+        font-weight: 700;
       }
 
       select,
@@ -250,10 +257,11 @@ type InputMode = 'demo' | 'url' | 'text';
       textarea,
       button.primary-action {
         width: 100%;
-        border-radius: 10px;
+        border-radius: 0;
         border: 1px solid var(--border);
         padding: 0.75rem 0.85rem;
         font: inherit;
+        background: var(--panel);
       }
 
       textarea {
@@ -265,17 +273,18 @@ type InputMode = 'demo' | 'url' | 'text';
       .hero-card > ng-container button,
       .hero-card button:not(.tab) {
         margin-top: 0.85rem;
-        background: var(--accent);
+        background: var(--accent-2);
         color: white;
         border: none;
-        font-weight: 600;
+        font-weight: 700;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 0;
         padding: 0.75rem 0.85rem;
+        letter-spacing: 0.03em;
       }
 
       button:disabled {
-        opacity: 0.65;
+        opacity: 0.55;
         cursor: not-allowed;
       }
 
@@ -362,12 +371,13 @@ type InputMode = 'demo' | 'url' | 'text';
       }
 
       .chip {
-        background: var(--accent-soft);
-        color: var(--accent);
         border-radius: 999px;
-        padding: 0.25rem 0.7rem;
-        font-size: 0.82rem;
-        font-weight: 600;
+        padding: 0.28rem 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        font-family: Georgia, serif;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
       }
 
       .indicator-list {
@@ -385,7 +395,7 @@ type InputMode = 'demo' | 'url' | 'text';
       }
 
       .indicator-link:hover {
-        color: var(--ink);
+        color: var(--accent-2);
       }
 
       .preview {
@@ -543,6 +553,21 @@ export class EvaluatePageComponent implements OnInit {
 
   scrollToPanel(): void {
     document.querySelector('app-indicator-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  private readonly SDG_COLORS: Record<number, string> = {
+    1: '#E5243B', 2: '#DDA63A', 3: '#4C9F38', 4: '#C5192D', 5: '#FF3A21',
+    6: '#26BDE2', 7: '#FCC30B', 8: '#A21942', 9: '#FD6925', 10: '#DD1367',
+    11: '#FD9D24', 12: '#BF8B2E', 13: '#3F7E44', 14: '#0A97D9', 15: '#56C02B',
+    16: '#00689D', 17: '#19486A',
+  };
+
+  sdgColor(goal: number): string {
+    return this.SDG_COLORS[goal] ?? '#888';
+  }
+
+  sdgTextColor(goal: number): string {
+    return goal === 7 ? '#1a1a1a' : '#fff';
   }
 
   private formatError(err: unknown, fallback: string): string {

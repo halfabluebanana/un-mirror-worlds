@@ -95,7 +95,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
     .panel {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 18px;
+      border-radius: 0;
       padding: 1.25rem;
     }
 
@@ -114,8 +114,8 @@ import { ObservationPoint } from '../../models/evaluation.model';
 
     .tab-btn {
       border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 8px;
+      background: var(--bg);
+      border-radius: 0;
       padding: 0.4rem 0.75rem;
       font: inherit;
       font-size: 0.82rem;
@@ -128,9 +128,9 @@ import { ObservationPoint } from '../../models/evaluation.model';
     }
 
     .tab-btn.active {
-      background: var(--ink);
+      background: var(--accent-2);
       color: #fff;
-      border-color: var(--ink);
+      border-color: var(--accent-2);
     }
 
     .tab-btn.no-data {
@@ -141,24 +141,24 @@ import { ObservationPoint } from '../../models/evaluation.model';
       font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      background: rgba(0,0,0,0.12);
-      border-radius: 4px;
+      background: rgba(0,0,0,0.10);
+      border-radius: 0;
       padding: 0.1rem 0.35rem;
     }
 
     .tab-badge.shared {
-      background: #fff3cd;
-      color: #856404;
+      background: #f5e4a0;
+      color: #5a3e00;
     }
 
     .tab-btn.active .tab-badge {
-      background: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.22);
       color: #fff;
     }
 
     .card {
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0;
       overflow: hidden;
     }
 
@@ -168,7 +168,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
       align-items: flex-start;
       padding: 1rem;
       border-bottom: 1px solid var(--border);
-      background: var(--panel);
+      background: var(--accent-2-soft);
     }
 
     .card-label {
@@ -196,7 +196,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
       font-size: 0.78rem;
       font-weight: 700;
       padding: 0.3rem 0.65rem;
-      border-radius: 6px;
+      border-radius: 0;
       background: #d1fae5;
       color: #065f46;
       white-space: nowrap;
@@ -218,6 +218,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
       padding: 0.75rem 1rem;
       border-bottom: 1px solid var(--border);
       border-right: 1px solid var(--border);
+      background: var(--panel);
     }
 
     .field:nth-child(even) {
@@ -262,21 +263,21 @@ import { ObservationPoint } from '../../models/evaluation.model';
     }
 
     .shared-flag {
-      background: #fffbeb;
-      border-top: 1px solid #fde68a;
-      color: #78350f;
+      background: #fef9e7;
+      border-top: 2px solid #DDA63A;
+      color: #5a3c00;
     }
 
     .no-data-flag {
       background: #fef2f2;
-      border-top: 1px solid #fecaca;
+      border-top: 2px solid #E5243B;
       color: #7f1d1d;
     }
 
     .density-flag {
-      background: #fff7ed;
-      border-top: 1px solid #fed7aa;
-      color: #7c2d12;
+      background: #fdf3e7;
+      border-top: 2px solid #C96527;
+      color: #5a2800;
     }
   `],
 })
