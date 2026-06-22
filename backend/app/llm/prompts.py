@@ -13,6 +13,14 @@ For each indicator, include sdg_indicator code when known (e.g. 2.1.1, 4.2.2).
 For indicators tied to UN Data Commons, include dcid when you know it (e.g. undata/sdg/SN_ITK_DEFC).
 If dcid is unknown, leave it null — it will be resolved later.
 
+For each indicator, infer spatial_resolution: national, subnational, municipal, point, or unknown
+based on how the data is actually reported (e.g. DHS at national level vs GRID3 at 100m).
+Extract reference_year_start and reference_year_end when the document cites a survey year,
+census vintage, or dataset period (e.g. "2014 DHS", "2020 census").
+
+Extract claim_reference_year (when conclusions apply), and intervention_start_year /
+intervention_end_year when an intervention window is stated.
+
 Be conservative: only include indicators and SDGs supported by the text.
 Use submit_claim_extraction to return the structured result."""
 

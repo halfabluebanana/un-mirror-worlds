@@ -51,6 +51,20 @@ import { EvaluationLabel } from '../../models/evaluation.model';
         <span class="nf-amount">{{ label.indicator_source_variance.score | number: '1.0-0' }}%</span>
       </div>
       <p class="nf-note">{{ label.indicator_source_variance.explanation }}</p>
+
+      <div class="nf-rule"></div>
+      <div class="nf-row nf-row--main">
+        <span class="nf-nutrient">Geographic resolution fit</span>
+        <span class="nf-amount">{{ label.geographic_resolution_fit.score | number: '1.0-0' }}%</span>
+      </div>
+      <p class="nf-note">{{ label.geographic_resolution_fit.explanation }}</p>
+
+      <div class="nf-rule"></div>
+      <div class="nf-row nf-row--main">
+        <span class="nf-nutrient">Reference period fit</span>
+        <span class="nf-amount">{{ label.reference_period_fit.score | number: '1.0-0' }}%</span>
+      </div>
+      <p class="nf-note">{{ label.reference_period_fit.explanation }}</p>
       
 
       <div class="nf-rule nf-rule--thick"></div>
@@ -109,8 +123,8 @@ import { EvaluationLabel } from '../../models/evaluation.model';
       <div class="nf-rule nf-rule--thick"></div>
       <p class="nf-footnote">
         * Percent confidence scores are weighted from source variance, indicator correlation,
-        and comprehensiveness against historical methodology twins. Not a substitute for
-        custodian agency review.
+        comprehensiveness, geographic resolution fit, and reference period fit against
+        historical methodology twins. Not a substitute for custodian agency review.
       </p>
     </section>
   `,

@@ -10,6 +10,7 @@ from app.models import (
     SuitabilityBadge,
 )
 from app.services.datacommons import DataCommonsClient
+from app.services.fit_scoring import geographic_resolution_fit_score, reference_period_fit_score
 from app.services.metadata import fetch_sdg_metadata
 from app.services.twin_database import find_related_twins, load_twins
 
@@ -111,13 +112,39 @@ def evaluate_claim(claim: ReportClaim) -> EvaluateResponse:
     comprehensiveness_score, comprehensiveness_expl, recommendations = _comprehensiveness_score(
         claim, twins
     )
+    geographic_fit = geographic_resolution_fit_score(claim, country_dcid)
+    reference_fit = reference_period_fit_score(claim, observations)
 
     overall = round(
-        0.35 * variance_score + 0.35 * correlation_score + 0.30 * comprehensiveness_score,
+        0.20 * variance_score
+        + 0.20 * correlation_score
+        + 0.20 * comprehensiveness_score
+        + 0.20 * geographic_fit.score
+        + 0.20 * reference_fit.score,
         1,
     )
 
     badges: list[SuitabilityBadge] = []
+    if geographic_fit.score < 65:
+        severity = "critical" if geographic_fit.score < 45 else "warning"
+        badges.append(
+            SuitabilityBadge(
+                label="Geographic resolution mismatch",
+                severity=severity,
+                detail=geographic_fit.explanation,
+            )
+        )
+
+    if reference_fit.score < 65:
+        severity = "critical" if reference_fit.score < 45 else "warning"
+        badges.append(
+            SuitabilityBadge(
+                label="Reference period mismatch",
+                severity=severity,
+                detail=reference_fit.explanation,
+            )
+        )
+
     for indicator in claim.declared_indicators:
         code = indicator.sdg_indicator
         if not code:
@@ -175,6 +202,8 @@ def evaluate_claim(claim: ReportClaim) -> EvaluateResponse:
             score=comprehensiveness_score,
             explanation=comprehensiveness_expl,
         ),
+        geographic_resolution_fit=geographic_fit,
+        reference_period_fit=reference_fit,
         missing_source_recommendations=recommendations,
         related_initiatives=twins,
         badges=badges,

@@ -1,6 +1,8 @@
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
+
+SpatialResolution = Literal["national", "subnational", "municipal", "point", "unknown"]
 
 
 class SdgRef(BaseModel):
@@ -12,6 +14,13 @@ class IndicatorRef(BaseModel):
     dcid: str
     name: str
     sdg_indicator: Optional[str] = None
+
+
+class IndicatorProvenance(BaseModel):
+    spatial_resolution: SpatialResolution = "unknown"
+    reference_year_start: Optional[int] = None
+    reference_year_end: Optional[int] = None
+    geographic_entity_dcid: Optional[str] = None
 
 
 class ReportClaim(BaseModel):
@@ -26,6 +35,10 @@ class ReportClaim(BaseModel):
     declared_sources: list[str]
     analysis_level: str = "national"
     summary: str = ""
+    claim_reference_year: Optional[int] = None
+    intervention_start_year: Optional[int] = None
+    intervention_end_year: Optional[int] = None
+    indicator_provenance: dict[str, IndicatorProvenance] = Field(default_factory=dict)
 
 
 class TwinMatch(BaseModel):
@@ -72,6 +85,8 @@ class EvaluationLabel(BaseModel):
     indicator_source_variance: ScoreDetail
     indicator_correlation: ScoreDetail
     indicator_comprehensiveness: ScoreDetail
+    geographic_resolution_fit: ScoreDetail
+    reference_period_fit: ScoreDetail
     missing_source_recommendations: list[str]
     related_initiatives: list[TwinMatch]
     badges: list[SuitabilityBadge]
