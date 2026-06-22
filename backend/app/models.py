@@ -3,6 +3,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 SpatialResolution = Literal["national", "subnational", "municipal", "point", "unknown"]
+ClaimType = Literal["descriptive", "predictive", "causal", "unknown"]
 
 
 class SdgRef(BaseModel):
@@ -35,6 +36,7 @@ class ReportClaim(BaseModel):
     declared_sources: list[str]
     analysis_level: str = "national"
     summary: str = ""
+    claim_type: ClaimType = "unknown"
     claim_reference_year: Optional[int] = None
     intervention_start_year: Optional[int] = None
     intervention_end_year: Optional[int] = None
@@ -75,6 +77,7 @@ class ObservationPoint(BaseModel):
     unit: Optional[str] = None
     earliest_date: Optional[str] = None
     latest_date: Optional[str] = None
+    obs_count: Optional[int] = None
     data_available: bool = True
 
 

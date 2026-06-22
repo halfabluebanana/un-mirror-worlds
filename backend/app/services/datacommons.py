@@ -128,6 +128,7 @@ class DataCommonsClient:
                     unit=facet_detail.get("unit"),
                     earliest_date=facet.get("earliestDate"),
                     latest_date=facet.get("latestDate"),
+                    obs_count=facet.get("obsCount"),
                     data_available=True,
                 )
             )

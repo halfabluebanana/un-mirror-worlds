@@ -91,6 +91,7 @@ def _enrich_draft(
         declared_indicators=indicators,
         declared_sources=draft.declared_sources or ["Unspecified public datasets"],
         analysis_level=analysis_level,
+        claim_type=draft.claim_type,
         summary=draft.summary.strip()[:800],
         claim_reference_year=draft.claim_reference_year,
         intervention_start_year=draft.intervention_start_year,

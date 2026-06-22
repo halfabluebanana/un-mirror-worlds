@@ -21,6 +21,12 @@ census vintage, or dataset period (e.g. "2014 DHS", "2020 census").
 Extract claim_reference_year (when conclusions apply), and intervention_start_year /
 intervention_end_year when an intervention window is stated.
 
+Classify claim_type:
+- descriptive: report describes current state, correlations, or mapping (most common)
+- predictive: report models or forecasts future outcomes
+- causal: report attributes change to a specific intervention or policy — look for language
+  like "reduced", "caused", "impact of", "effect of", "due to", "led to"
+
 Be conservative: only include indicators and SDGs supported by the text.
 Use submit_claim_extraction to return the structured result."""
 
