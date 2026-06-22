@@ -42,6 +42,10 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json",
+            "allowedHosts": [".ngrok.app", ".ngrok-free.app"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "data-suitability-frontend:build:production"

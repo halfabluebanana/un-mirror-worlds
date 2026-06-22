@@ -18,7 +18,7 @@ export interface IngestPayload {
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private readonly baseUrl = 'http://localhost:8000/api';
+  private readonly baseUrl = '/api';
 
   constructor(private readonly http: HttpClient) {}
 
