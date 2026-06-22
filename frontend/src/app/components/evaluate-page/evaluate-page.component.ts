@@ -59,7 +59,9 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
             </div>
           </section>
 
-          <app-nutrition-label [label]="label"></app-nutrition-label>
+          <div class="label-wrap">
+            <app-nutrition-label [label]="label"></app-nutrition-label>
+          </div>
         </div>
       </section>
     </main>
@@ -147,6 +149,12 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
       .result-column {
         display: grid;
         gap: 1rem;
+      }
+
+      .label-wrap {
+        display: flex;
+        justify-content: center;
+        padding: 0.5rem 0 1rem;
       }
 
       dl {
