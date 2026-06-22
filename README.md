@@ -1,6 +1,44 @@
 # Mirror Worlds
 
+UN Open Source Week demo: evaluate SDG report claims and produce a **Data Suitability & Confidence** nutrition-style label.
 
+## Demo app
+
+Python **Flask** backend + **Angular** frontend, based on the UNSD blueprint for automated report quality analysis.
+
+### Backend (port 8000)
+
+```bash
+cd backend
+chmod +x run.sh
+./run.sh
+```
+
+Key endpoints:
+
+- `GET /api/twins` — historical case studies indexed as methodology twins
+- `GET /api/demo-claims` — sample report claims
+- `POST /api/evaluate` — generate a suitability label (twin match, UN Data Commons observations, SDG metadata)
+
+### Frontend (port 4200)
+
+Requires Node.js 18+.
+
+```bash
+cd frontend
+chmod +x run.sh
+./run.sh
+```
+
+Open http://localhost:4200
+
+### UN Data Commons MCP
+
+Project MCP config lives in `.cursor/mcp.json` (`undata`, `undata-cdc`, `undata-sdmx`). The backend calls the same Data Commons REST API used by the MCP tools (`search_indicators`, `get_observations`).
+
+### Case studies
+
+Structured twin index: `case_studies/*.json`
 
 ## Getting started
 
