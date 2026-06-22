@@ -56,6 +56,13 @@ class ObservationPoint(BaseModel):
     value: Optional[float]
     date: Optional[str]
     source: str
+    agency: Optional[str] = None
+    measurement_method: Optional[str] = None
+    observation_period: Optional[str] = None
+    unit: Optional[str] = None
+    earliest_date: Optional[str] = None
+    latest_date: Optional[str] = None
+    data_available: bool = True
 
 
 class EvaluationLabel(BaseModel):
