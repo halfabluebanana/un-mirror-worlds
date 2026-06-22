@@ -163,7 +163,7 @@ type InputMode = 'demo' | 'url' | 'text';
           </section>
 
           <div class="label-wrap">
-            <app-nutrition-label [label]="label"></app-nutrition-label>
+            <app-nutrition-label [label]="label" (scoreClicked)="scrollToPanel()"></app-nutrition-label>
           </div>
 
           <app-indicator-panel
@@ -539,6 +539,10 @@ export class EvaluatePageComponent implements OnInit {
     setTimeout(() => {
       document.querySelector('app-indicator-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50);
+  }
+
+  scrollToPanel(): void {
+    document.querySelector('app-indicator-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   private formatError(err: unknown, fallback: string): string {

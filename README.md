@@ -117,12 +117,36 @@ These are modelled on real UN case studies in the historical twin database.
 
 ---
 
-## What's next
+## Implementation status
 
-- [ ] Indicator Scout: for a given policy topic, surface indicators that *should* be in scope vs. what's declared
-- [ ] Decision log: record analyst choices (why an indicator was excluded, why a warning was acknowledged) so the appendix is an audit trail, not just metadata
-- [ ] Export: generate a structured methodology appendix (PDF / structured JSON) that travels with the report
-- [ ] Power/adequacy check: flag when observation count and data type cannot support the claim type (trend vs. point estimate vs. causal)
+### Done (`feature/methodology-card`)
+
+**Backend**
+- [x] Methodology card data per indicator — agency, measurement method, time coverage, obs count, unit from UN Data Commons facet API
+- [x] `importName` → human-readable agency/method lookup table
+- [x] Data gap detection — indicators with no DC observations flagged as `data_available: false`
+- [x] Claim type extraction — LLM classifies `descriptive` / `predictive` / `causal`
+- [x] Indicator independence badge — flags when 2+ indicators share the same modelling source
+- [x] Observation density badge — flags sparse data on trend/causal claims
+- [x] Causal claim / observational data badge — critical alert when causal language meets observational sources
+- [x] Geographic resolution fit scoring (from `feedback-1`)
+- [x] Reference period fit scoring (from `feedback-1`)
+
+**Frontend**
+- [x] Nutrition label with 5 confidence scores
+- [x] Confidence score rows clickable — scroll to indicator methodology panel
+- [x] Per-indicator methodology card panel with tab strip
+- [x] Clicking indicator name in claim card jumps to its methodology tab
+- [x] Shared source / no data / sparse data flags shown inline on each methodology card
+- [x] ngrok hosting configured
+
+### Outstanding
+
+- [ ] **Indicator Scout** — for a given policy topic, surface indicators that *should* be in scope vs. what's declared; the `missing_source_recommendations` field exists in the backend but the scout logic is not yet connected to UN Data Commons search
+- [ ] **Decision log** — record why indicators were excluded or warnings acknowledged so the appendix is an audit trail, not just metadata
+- [ ] **Export** — generate a PDF/JSON methodology appendix that travels with the report
+- [ ] **Power/adequacy check** — flag when observation count and data type cannot support the claim type (trend vs. point estimate vs. causal)
+- [ ] **Somalia demo data** — CLM-001 correctly flags "No DC data" for all 3 declared indicators; Somalia is genuinely absent from UN Data Commons for those SDGs
 
 ---
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { EvaluationLabel } from '../../models/evaluation.model';
@@ -32,37 +32,37 @@ import { EvaluationLabel } from '../../models/evaluation.model';
       <p class="nf-dv-header">Confidence scores</p>
       <div class="nf-rule nf-rule--medium"></div>
 
-      <div class="nf-row nf-row--main">
+      <div class="nf-row nf-row--main nf-row--clickable" (click)="scoreClicked.emit()">
         <span class="nf-nutrient">Indicator correlation</span>
-        <span class="nf-amount">{{ label.indicator_correlation.score | number: '1.0-0' }}%</span>
+        <span class="nf-amount">{{ label.indicator_correlation.score | number: '1.0-0' }}% <span class="nf-arrow">↓</span></span>
       </div>
       <p class="nf-note">{{ label.indicator_correlation.explanation }}</p>
       <div class="nf-rule"></div>
 
-      <div class="nf-row nf-row--main">
+      <div class="nf-row nf-row--main nf-row--clickable" (click)="scoreClicked.emit()">
         <span class="nf-nutrient">Indicator comprehensiveness</span>
-        <span class="nf-amount">{{ label.indicator_comprehensiveness.score | number: '1.0-0' }}%</span>
+        <span class="nf-amount">{{ label.indicator_comprehensiveness.score | number: '1.0-0' }}% <span class="nf-arrow">↓</span></span>
       </div>
       <p class="nf-note">{{ label.indicator_comprehensiveness.explanation }}</p>
 
       <div class="nf-rule"></div>
-      <div class="nf-row nf-row--main">
+      <div class="nf-row nf-row--main nf-row--clickable" (click)="scoreClicked.emit()">
         <span class="nf-nutrient">Indicator source variance</span>
-        <span class="nf-amount">{{ label.indicator_source_variance.score | number: '1.0-0' }}%</span>
+        <span class="nf-amount">{{ label.indicator_source_variance.score | number: '1.0-0' }}% <span class="nf-arrow">↓</span></span>
       </div>
       <p class="nf-note">{{ label.indicator_source_variance.explanation }}</p>
 
       <div class="nf-rule"></div>
-      <div class="nf-row nf-row--main">
+      <div class="nf-row nf-row--main nf-row--clickable" (click)="scoreClicked.emit()">
         <span class="nf-nutrient">Geographic resolution fit</span>
-        <span class="nf-amount">{{ label.geographic_resolution_fit.score | number: '1.0-0' }}%</span>
+        <span class="nf-amount">{{ label.geographic_resolution_fit.score | number: '1.0-0' }}% <span class="nf-arrow">↓</span></span>
       </div>
       <p class="nf-note">{{ label.geographic_resolution_fit.explanation }}</p>
 
       <div class="nf-rule"></div>
-      <div class="nf-row nf-row--main">
+      <div class="nf-row nf-row--main nf-row--clickable" (click)="scoreClicked.emit()">
         <span class="nf-nutrient">Reference period fit</span>
-        <span class="nf-amount">{{ label.reference_period_fit.score | number: '1.0-0' }}%</span>
+        <span class="nf-amount">{{ label.reference_period_fit.score | number: '1.0-0' }}% <span class="nf-arrow">↓</span></span>
       </div>
       <p class="nf-note">{{ label.reference_period_fit.explanation }}</p>
       
@@ -301,9 +301,33 @@ import { EvaluationLabel } from '../../models/evaluation.model';
         font-size: 0.65rem;
         line-height: 1.35;
       }
+
+      .nf-row--clickable {
+        cursor: pointer;
+        border-radius: 3px;
+        margin: 0 -0.25rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        transition: background 0.1s;
+      }
+
+      .nf-row--clickable:hover {
+        background: #f0f0f0;
+      }
+
+      .nf-arrow {
+        font-size: 0.7rem;
+        opacity: 0.45;
+        margin-left: 0.2rem;
+      }
+
+      .nf-row--clickable:hover .nf-arrow {
+        opacity: 1;
+      }
     `,
   ],
 })
 export class NutritionLabelComponent {
   @Input() label: EvaluationLabel | null = null;
+  @Output() scoreClicked = new EventEmitter<void>();
 }
