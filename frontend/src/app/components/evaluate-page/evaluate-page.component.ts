@@ -7,17 +7,15 @@ import {
   EvaluationLabel,
   ExtractionConfig,
   ReportClaim,
-  TwinSummary,
 } from '../../models/evaluation.model';
 import { NutritionLabelComponent } from '../nutrition-label/nutrition-label.component';
-import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
 
 type InputMode = 'demo' | 'url' | 'text';
 
 @Component({
   selector: 'app-evaluate-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NutritionLabelComponent, TwinPanelComponent],
+  imports: [CommonModule, FormsModule, NutritionLabelComponent],
   template: `
     <main class="page">
       <section class="hero">
@@ -132,11 +130,8 @@ type InputMode = 'demo' | 'url' | 'text';
         </div>
       </section>
 
-      <section class="layout">
-        <app-twin-panel [twins]="twins"></app-twin-panel>
-
-        <div class="result-column">
-          <section class="claim-card" *ngIf="activeClaim">
+      <section class="results">
+        <section class="claim-card" *ngIf="activeClaim">
             <h2>Extracted claim schema</h2>
             <dl>
               <div><dt>Claim ID</dt><dd>{{ activeClaim.claim_id }}</dd></div>
@@ -157,9 +152,8 @@ type InputMode = 'demo' | 'url' | 'text';
             <p class="preview" *ngIf="textPreview">{{ textPreview }}</p>
           </section>
 
-          <div class="label-wrap">
-            <app-nutrition-label [label]="label"></app-nutrition-label>
-          </div>
+        <div class="label-wrap">
+          <app-nutrition-label [label]="label"></app-nutrition-label>
         </div>
       </section>
     </main>
@@ -304,16 +298,11 @@ type InputMode = 'demo' | 'url' | 'text';
         margin: 0.75rem 0 0;
       }
 
-      .layout {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 1.25rem;
-        align-items: start;
-      }
-
-      .result-column {
+      .results {
         display: grid;
         gap: 1rem;
+        max-width: 720px;
+        margin: 0 auto;
       }
 
       .label-wrap {
@@ -377,7 +366,6 @@ type InputMode = 'demo' | 'url' | 'text';
 
       @media (max-width: 900px) {
         .hero,
-        .layout,
         dl div {
           grid-template-columns: 1fr;
         }
@@ -386,7 +374,6 @@ type InputMode = 'demo' | 'url' | 'text';
   ],
 })
 export class EvaluatePageComponent implements OnInit {
-  twins: TwinSummary[] = [];
   claims: ReportClaim[] = [];
   inputMode: InputMode = 'url';
 
@@ -409,11 +396,6 @@ export class EvaluatePageComponent implements OnInit {
   constructor(private readonly api: ApiService) {}
 
   ngOnInit(): void {
-    this.api.getTwins().subscribe({
-      next: (twins) => (this.twins = twins),
-      error: () => (this.error = 'Could not load historical twins. Is the API running?'),
-    });
-
     this.api.getDemoClaims().subscribe({
       next: (claims) => {
         this.claims = claims;

@@ -90,7 +90,7 @@ import { EvaluationLabel } from '../../models/evaluation.model';
         </ul>
       </section --->
 
-      <!--- section *ngIf="label.related_initiatives.length" class="nf-section">
+      <section *ngIf="label.related_initiatives.length" class="nf-section">
         <p class="nf-section-title">Related initiatives</p>
         <div class="nf-rule nf-rule--medium"></div>
         <div *ngFor="let twin of label.related_initiatives; let last = last" class="nf-twin">
@@ -107,7 +107,7 @@ import { EvaluationLabel } from '../../models/evaluation.model';
         </div>
       </section>
 
-      <section *ngIf="label.observations.length" class="nf-section">
+      <!--- section *ngIf="label.observations.length" class="nf-section">
         <p class="nf-section-title">UN Data Commons observations</p>
         <div class="nf-rule nf-rule--medium"></div>
         <div *ngFor="let point of label.observations; let last = last" class="nf-obs-row">
