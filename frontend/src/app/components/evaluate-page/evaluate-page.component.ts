@@ -375,9 +375,10 @@ type InputMode = 'demo' | 'url' | 'text';
         padding: 0.28rem 0.75rem;
         font-size: 0.78rem;
         font-weight: 700;
-        font-family: Georgia, serif;
+        font-family: Arial, Helvetica, sans-serif;
         letter-spacing: 0.01em;
-        white-space: nowrap;
+        max-width: 100%;
+        word-break: break-word;
       }
 
       .indicator-list {

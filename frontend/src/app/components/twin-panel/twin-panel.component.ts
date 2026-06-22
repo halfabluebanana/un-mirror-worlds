@@ -79,8 +79,9 @@ import { TwinSummary } from '../../models/evaluation.model';
         padding: 0.22rem 0.6rem;
         font-size: 0.72rem;
         font-weight: 700;
-        font-family: Georgia, serif;
-        white-space: nowrap;
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 100%;
+        word-break: break-word;
       }
 
       a {
