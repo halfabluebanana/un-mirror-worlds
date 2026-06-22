@@ -7,15 +7,18 @@ import {
   EvaluationLabel,
   ExtractionConfig,
   ReportClaim,
+  TwinSummary,
 } from '../../models/evaluation.model';
 import { NutritionLabelComponent } from '../nutrition-label/nutrition-label.component';
+import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
+import { IndicatorPanelComponent } from '../indicator-panel/indicator-panel.component';
 
 type InputMode = 'demo' | 'url' | 'text';
 
 @Component({
   selector: 'app-evaluate-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NutritionLabelComponent],
+  imports: [CommonModule, FormsModule, NutritionLabelComponent, TwinPanelComponent, IndicatorPanelComponent],
   template: `
     <main class="page">
       <section class="hero">
@@ -130,8 +133,11 @@ type InputMode = 'demo' | 'url' | 'text';
         </div>
       </section>
 
-      <section class="results">
-        <section class="claim-card" *ngIf="activeClaim">
+      <section class="layout">
+        <app-twin-panel [twins]="twins"></app-twin-panel>
+
+        <div class="result-column">
+          <section class="claim-card" *ngIf="activeClaim">
             <h2>Extracted claim schema</h2>
             <dl>
               <div><dt>Claim ID</dt><dd>{{ activeClaim.claim_id }}</dd></div>
@@ -142,39 +148,35 @@ type InputMode = 'demo' | 'url' | 'text';
               <div><dt>Indicators</dt><dd>{{ activeClaim.declared_indicators.length }} detected</dd></div>
             </dl>
             <div class="chip-row">
-              <span class="chip" *ngFor="let sdg of activeClaim.sdgs">SDG {{ sdg.goal }}</span>
+              <span
+                class="chip"
+                *ngFor="let sdg of activeClaim.sdgs"
+                [style.background]="sdgColor(sdg.goal)"
+                [style.color]="sdgTextColor(sdg.goal)"
+              >SDG {{ sdg.goal }} · {{ sdg.name }}</span>
             </div>
             <ul class="indicator-list" *ngIf="activeClaim.declared_indicators.length">
-              <li *ngFor="let indicator of activeClaim.declared_indicators">
+              <li
+                *ngFor="let indicator of activeClaim.declared_indicators"
+                class="indicator-link"
+                (click)="openIndicator(indicator.dcid)"
+              >
                 {{ indicator.name }}
               </li>
             </ul>
             <p class="preview" *ngIf="textPreview">{{ textPreview }}</p>
           </section>
 
-        <div class="label-wrap">
-          <app-nutrition-label [label]="label"></app-nutrition-label>
-        </div>
+          <div class="label-wrap">
+            <app-nutrition-label [label]="label" (scoreClicked)="scrollToPanel()"></app-nutrition-label>
+          </div>
 
-        <ng-container *ngIf="label as evalLabel">
-          <section class="related-card" *ngIf="evalLabel.related_initiatives.length">
-            <h2>Related initiatives</h2>
-            <p class="related-intro">
-              Historical case studies with similar SDGs, geography, and indicators.
-            </p>
-            <article *ngFor="let twin of evalLabel.related_initiatives" class="related-item">
-              <div class="related-header">
-                <h3>{{ twin.title }}</h3>
-                <span class="related-score">{{ twin.similarity_score * 100 | number: '1.0-0' }}% match</span>
-              </div>
-              <p class="related-meta">
-                {{ twin.country_name }} · SDGs {{ twin.matched_sdgs.join(', ') || 'n/a' }} ·
-                {{ twin.matched_indicators.length }} shared indicators
-              </p>
-              <a [href]="twin.url" target="_blank" rel="noreferrer">View case study</a>
-            </article>
-          </section>
-        </ng-container>
+          <app-indicator-panel
+            *ngIf="label"
+            [observations]="label.observations"
+            [activeIndicatorDcid]="activeIndicatorDcid"
+          ></app-indicator-panel>
+        </div>
       </section>
     </main>
   `,
@@ -215,7 +217,7 @@ type InputMode = 'demo' | 'url' | 'text';
       .claim-card {
         background: var(--panel);
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 0;
         padding: 1.25rem;
       }
 
@@ -228,24 +230,26 @@ type InputMode = 'demo' | 'url' | 'text';
 
       .tab {
         border: 1px solid var(--border);
-        background: #fff;
+        background: var(--bg);
         color: var(--ink);
-        border-radius: 8px;
+        border-radius: 0;
         padding: 0.5rem 0.65rem;
-        font-weight: 600;
+        font-weight: 700;
+        font-family: inherit;
         margin-top: 0;
+        letter-spacing: 0.02em;
       }
 
       .tab.active {
-        background: var(--ink);
+        background: var(--accent);
         color: #fff;
-        border-color: var(--ink);
+        border-color: var(--accent);
       }
 
       label {
         display: block;
         margin-bottom: 0.45rem;
-        font-weight: 600;
+        font-weight: 700;
       }
 
       select,
@@ -253,10 +257,11 @@ type InputMode = 'demo' | 'url' | 'text';
       textarea,
       button.primary-action {
         width: 100%;
-        border-radius: 10px;
+        border-radius: 0;
         border: 1px solid var(--border);
         padding: 0.75rem 0.85rem;
         font: inherit;
+        background: var(--panel);
       }
 
       textarea {
@@ -268,17 +273,18 @@ type InputMode = 'demo' | 'url' | 'text';
       .hero-card > ng-container button,
       .hero-card button:not(.tab) {
         margin-top: 0.85rem;
-        background: var(--accent);
+        background: var(--accent-2);
         color: white;
         border: none;
-        font-weight: 600;
+        font-weight: 700;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 0;
         padding: 0.75rem 0.85rem;
+        letter-spacing: 0.03em;
       }
 
       button:disabled {
-        opacity: 0.65;
+        opacity: 0.55;
         cursor: not-allowed;
       }
 
@@ -318,71 +324,16 @@ type InputMode = 'demo' | 'url' | 'text';
         margin: 0.75rem 0 0;
       }
 
-      .results {
+      .layout {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 1.25rem;
+        align-items: start;
+      }
+
+      .result-column {
         display: grid;
         gap: 1rem;
-        max-width: 720px;
-        margin: 0 auto;
-      }
-
-      .related-card {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 1.25rem;
-      }
-
-      .related-card h2 {
-        margin: 0;
-        font-size: 1.1rem;
-      }
-
-      .related-intro {
-        margin: 0.35rem 0 1rem;
-        color: var(--muted);
-        font-size: 0.92rem;
-      }
-
-      .related-item {
-        border-top: 1px solid var(--border);
-        padding: 0.85rem 0;
-      }
-
-      .related-item:first-of-type {
-        border-top: none;
-        padding-top: 0;
-      }
-
-      .related-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 0.75rem;
-      }
-
-      .related-header h3 {
-        margin: 0;
-        font-size: 0.95rem;
-        font-weight: 600;
-        flex: 1;
-      }
-
-      .related-score {
-        font-size: 0.82rem;
-        font-weight: 600;
-        color: var(--accent);
-        white-space: nowrap;
-      }
-
-      .related-meta {
-        margin: 0.35rem 0 0.5rem;
-        color: var(--muted);
-        font-size: 0.88rem;
-      }
-
-      .related-item a {
-        font-size: 0.88rem;
-        font-weight: 600;
       }
 
       .label-wrap {
@@ -420,12 +371,14 @@ type InputMode = 'demo' | 'url' | 'text';
       }
 
       .chip {
-        background: var(--accent-soft);
-        color: var(--accent);
-        border-radius: 999px;
-        padding: 0.25rem 0.7rem;
-        font-size: 0.82rem;
-        font-weight: 600;
+        border-radius: 4px;
+        padding: 0.28rem 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        font-family: Arial, Helvetica, sans-serif;
+        letter-spacing: 0.01em;
+        max-width: 100%;
+        word-break: break-word;
       }
 
       .indicator-list {
@@ -433,6 +386,17 @@ type InputMode = 'demo' | 'url' | 'text';
         padding-left: 1.1rem;
         font-size: 0.88rem;
         color: var(--muted);
+      }
+
+      .indicator-link {
+        cursor: pointer;
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      .indicator-link:hover {
+        color: var(--accent-2);
       }
 
       .preview {
@@ -446,6 +410,7 @@ type InputMode = 'demo' | 'url' | 'text';
 
       @media (max-width: 900px) {
         .hero,
+        .layout,
         dl div {
           grid-template-columns: 1fr;
         }
@@ -454,6 +419,7 @@ type InputMode = 'demo' | 'url' | 'text';
   ],
 })
 export class EvaluatePageComponent implements OnInit {
+  twins: TwinSummary[] = [];
   claims: ReportClaim[] = [];
   inputMode: InputMode = 'url';
 
@@ -472,10 +438,16 @@ export class EvaluatePageComponent implements OnInit {
   textPreview = '';
   loading = false;
   error = '';
+  activeIndicatorDcid: string | null = null;
 
   constructor(private readonly api: ApiService) {}
 
   ngOnInit(): void {
+    this.api.getTwins().subscribe({
+      next: (twins) => (this.twins = twins),
+      error: () => (this.error = 'Could not load historical twins. Is the API running?'),
+    });
+
     this.api.getDemoClaims().subscribe({
       next: (claims) => {
         this.claims = claims;
@@ -571,6 +543,32 @@ export class EvaluatePageComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  openIndicator(dcid: string): void {
+    this.activeIndicatorDcid = dcid;
+    setTimeout(() => {
+      document.querySelector('app-indicator-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+
+  scrollToPanel(): void {
+    document.querySelector('app-indicator-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  private readonly SDG_COLORS: Record<number, string> = {
+    1:  '#B07080', 2:  '#B09A55', 3:  '#5A9060', 4:  '#9A5060', 5:  '#BF7868',
+    6:  '#5898B0', 7:  '#C0A840', 8:  '#7A4458', 9:  '#B87045', 10: '#A85075',
+    11: '#BE8840', 12: '#9A8448', 13: '#4A7850', 14: '#3A88AA', 15: '#5A9050',
+    16: '#3A7088', 17: '#3A5870',
+  };
+
+  sdgColor(goal: number): string {
+    return this.SDG_COLORS[goal] ?? '#888';
+  }
+
+  sdgTextColor(goal: number): string {
+    return goal === 7 ? '#2C1A0E' : '#fff';
   }
 
   private formatError(err: unknown, fallback: string): string {

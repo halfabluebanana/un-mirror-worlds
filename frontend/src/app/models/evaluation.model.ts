@@ -28,6 +28,7 @@ export interface ReportClaim {
   declared_sources: string[];
   analysis_level: string;
   summary: string;
+  claim_type?: string;
   claim_reference_year?: number | null;
   intervention_start_year?: number | null;
   intervention_end_year?: number | null;
@@ -71,6 +72,14 @@ export interface ObservationPoint {
   value: number | null;
   date: string | null;
   source: string;
+  agency?: string | null;
+  measurement_method?: string | null;
+  observation_period?: string | null;
+  unit?: string | null;
+  earliest_date?: string | null;
+  latest_date?: string | null;
+  obs_count?: number | null;
+  data_available: boolean;
 }
 
 export interface EvaluationLabel {

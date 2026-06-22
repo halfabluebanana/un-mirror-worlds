@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from app.models import IndicatorProvenance, SdgRef, SpatialResolution
+from app.models import ClaimType, IndicatorProvenance, SdgRef, SpatialResolution
 
 
 class LlmIndicatorDraft(BaseModel):
@@ -35,6 +35,15 @@ class LlmClaimDraft(BaseModel):
     )
     intervention_start_year: Optional[int] = None
     intervention_end_year: Optional[int] = None
+    claim_type: ClaimType = Field(
+        default="unknown",
+        description=(
+            "descriptive: report describes what is (correlations, mapping, status). "
+            "predictive: report forecasts or models future outcomes. "
+            "causal: report attributes change to an intervention or policy (uses language "
+            "like 'reduced', 'caused', 'impact of', 'effect of', 'due to')."
+        ),
+    )
     summary: str = Field(
         description="Two to three sentences summarizing the empirical claim and methods",
     )

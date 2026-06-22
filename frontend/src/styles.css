@@ -1,14 +1,16 @@
 :root {
-  --bg: #f4f7fb;
-  --panel: #ffffff;
-  --ink: #10233f;
-  --muted: #5b6b82;
-  --accent: #0f6cbd;
-  --accent-soft: #e8f2fc;
-  --warning: #b45309;
-  --critical: #b91c1c;
-  --ok: #047857;
-  --border: #d7e0ec;
+  --bg: #F5F3EF;
+  --panel: #FDFCFB;
+  --ink: #2C1A0E;
+  --muted: #7A6855;
+  --accent: #C96527;
+  --accent-2: #6B3D8F;
+  --accent-soft: #F5E4CF;
+  --accent-2-soft: #EDE3F5;
+  --warning: #9A5015;
+  --critical: #9B1C1C;
+  --ok: #2D6A4F;
+  --border: #D5CCC0;
   --label-bg: #0f172a;
   --label-ink: #f8fafc;
 }
@@ -19,9 +21,9 @@
 
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: Georgia, 'Book Antiqua', Palatino, 'Palatino Linotype', serif;
   color: var(--ink);
-  background: linear-gradient(180deg, #eef4fb 0%, var(--bg) 100%);
+  background: var(--bg);
 }
 
 button,

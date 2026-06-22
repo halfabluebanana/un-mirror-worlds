@@ -174,6 +174,70 @@ def evaluate_claim(claim: ReportClaim) -> EvaluateResponse:
                 )
             )
 
+    # Indicator independence — flag shared underlying model/source
+    source_groups: dict[str, list[str]] = {}
+    for point in observations:
+        if point.agency and point.data_available:
+            source_groups.setdefault(point.agency, []).append(point.name)
+    for agency, names in source_groups.items():
+        if len(names) >= 2:
+            badges.append(
+                SuitabilityBadge(
+                    label="Shared source assumption",
+                    severity="warning",
+                    detail=(
+                        f"{len(names)} indicators ({', '.join(names[:3])}) all draw from "
+                        f"{agency} modelled estimates and share underlying assumptions — "
+                        "they are not independent evidence."
+                    ),
+                )
+            )
+
+    # Observation density — flag sparse data relative to claim type
+    sparse = [
+        point for point in observations
+        if point.data_available and point.obs_count is not None and point.obs_count < 5
+    ]
+    no_data = [point for point in observations if not point.data_available]
+    if no_data:
+        badges.append(
+            SuitabilityBadge(
+                label="No DC data available",
+                severity="critical",
+                detail=(
+                    f"{len(no_data)} declared indicator(s) have no observations in UN Data "
+                    f"Commons for {claim.geographic_scope}: "
+                    f"{', '.join(p.name for p in no_data[:3])}."
+                ),
+            )
+        )
+    if sparse and claim.claim_type in ("predictive", "causal"):
+        badges.append(
+            SuitabilityBadge(
+                label="Insufficient observation density",
+                severity="warning",
+                detail=(
+                    f"{len(sparse)} indicator(s) have fewer than 5 observations but the "
+                    f"claim type is '{claim.claim_type}' — sparse data may not support "
+                    "trend or impact conclusions."
+                ),
+            )
+        )
+
+    # Claim type mismatch — causal claim with only observational data
+    if claim.claim_type == "causal":
+        badges.append(
+            SuitabilityBadge(
+                label="Causal claim / observational data",
+                severity="critical",
+                detail=(
+                    "This report makes a causal claim (attributing change to an intervention "
+                    "or policy) but all declared data sources are observational. Causal "
+                    "conclusions require experimental design or a validated counterfactual."
+                ),
+            )
+        )
+
     if claim.geographic_scope.lower() in {"sudan", "somalia"} and claim.claim_id == "CLM-001":
         badges.append(
             SuitabilityBadge(
