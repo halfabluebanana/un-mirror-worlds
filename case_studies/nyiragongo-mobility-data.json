@@ -1,0 +1,48 @@
+{
+  "url": "https://www.ie.edu/insights/disaster-risk-management/response/case-study-harnessing-mobility-data-for-crisis-response-nyiragongo/",
+  "title": "Case Study: Harnessing Mobility Data for Crisis Response, Nyiragongo",
+  "country_dcid": "country/COD",
+  "country_name": "Democratic Republic of the Congo",
+  "sdgs": [
+    { "goal": 11, "name": "Sustainable Cities and Communities" },
+    { "goal": 3, "name": "Good Health and Well-being" },
+    { "goal": 1, "name": "No Poverty" },
+    { "goal": 13, "name": "Climate Action" },
+    { "goal": 10, "name": "Reduced Inequalities" }
+  ],
+  "indicators_measured": [
+    {
+      "dcid": "undata/sdg/VC_DSR_AFFCT",
+      "name": "Number of people affected by disasters",
+      "sdg_indicator": "1.5.1"
+    },
+    {
+      "dcid": "undata/unicef/MG_INTERNAL_DISP_PERS.AGE--AGE-_T__STATISTICAL_POPULATION--STATISTICAL_POPULATION-POP_DISASTER",
+      "name": "Internally displaced persons (share due to disaster)",
+      "sdg_indicator": "1.5.1"
+    },
+    {
+      "dcid": "undata/sdg/VC_DSR_MISS",
+      "name": "Number of missing persons due to disaster",
+      "sdg_indicator": "1.5.2"
+    }
+  ],
+  "indicators_targeted": [
+    {
+      "dcid": "undata/sdg/VC_DSR_AFFCT",
+      "name": "People affected by disasters",
+      "rationale": "400,000+ people displaced when Mount Nyiragongo lava destroyed 3,500+ homes, schools, and health centers near Goma"
+    },
+    {
+      "dcid": "undata/unicef/MG_INTERNAL_DISP_PERS.AGE--AGE-_T__STATISTICAL_POPULATION--STATISTICAL_POPULATION-POP_DISASTER",
+      "name": "Disaster-related internal displacement",
+      "rationale": "Tracking displacement to Bukavu, Rutshuru, and Sake-Masisi for targeted aid and recovery planning"
+    },
+    {
+      "dcid": "undata/sdg/SH_DYN_MORT.AGE--Y0T4__SEX--_T",
+      "name": "Under-5 mortality risk from disease outbreaks",
+      "rationale": "Overcrowded shelters increased cholera risk; mobility data enabled targeted health interventions"
+    }
+  ],
+  "summary": "In May 2021, Mount Nyiragongo erupted near Goma, DRC, destroying 3,500+ homes, schools, and health centers and displacing 400,000+ people in a region already facing chronic conflict. Traditional on-the-ground population assessments were too slow and costly for rapid response. Flowminder partnered with Vodacom RDC to analyze anonymized mobile Call Detail Records (CDRs), mapping displacement patterns to Bukavu, Rutshuru, and Sake-Masisi. This enabled targeted delivery of shelter, food, water, sanitation, and hygiene supplies; identification of high-density areas for cholera containment; and tracking of gradual return to Goma for recovery planning. Data became publicly available ~2 months post-eruption, limiting immediate impact but demonstrating scalability. Methods include anonymized CDR mobility analysis, population displacement mapping, privacy-preserving protocols, and complementarity with satellite imagery and community assessments."
+}
