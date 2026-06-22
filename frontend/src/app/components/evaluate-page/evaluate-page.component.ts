@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import {
   EvaluationLabel,
+  ExtractionConfig,
   ReportClaim,
   TwinSummary,
 } from '../../models/evaluation.model';
@@ -80,6 +81,18 @@ type InputMode = 'demo' | 'url' | 'text';
             />
             <label for="claimTitle">Title override (optional)</label>
             <input id="claimTitle" type="text" [(ngModel)]="claimTitle" placeholder="Custom title" />
+            <label class="llm-toggle" *ngIf="extractionConfig">
+              <input type="checkbox" [(ngModel)]="useLlm" [disabled]="!extractionConfig.enabled" />
+              <span>
+                Deep extraction via LLM
+                <small *ngIf="extractionConfig.enabled">
+                  ({{ extractionConfig.provider }} · {{ extractionConfig.model }})
+                </small>
+                <small *ngIf="!extractionConfig.enabled" class="muted">
+                  — set ANTHROPIC_API_KEY in backend/.env
+                </small>
+              </span>
+            </label>
             <button type="button" (click)="runCustomAnalysis()" [disabled]="loading || !claimUrl.trim()">
               {{ loading ? 'Analyzing…' : 'Extract &amp; analyze' }}
             </button>
@@ -95,6 +108,18 @@ type InputMode = 'demo' | 'url' | 'text';
             ></textarea>
             <label for="textTitle">Title (optional)</label>
             <input id="textTitle" type="text" [(ngModel)]="claimTitle" placeholder="Report title" />
+            <label class="llm-toggle" *ngIf="extractionConfig">
+              <input type="checkbox" [(ngModel)]="useLlm" [disabled]="!extractionConfig.enabled" />
+              <span>
+                Deep extraction via LLM
+                <small *ngIf="extractionConfig.enabled">
+                  ({{ extractionConfig.provider }} · {{ extractionConfig.model }})
+                </small>
+                <small *ngIf="!extractionConfig.enabled" class="muted">
+                  — set ANTHROPIC_API_KEY in backend/.env
+                </small>
+              </span>
+            </label>
             <button type="button" (click)="runCustomAnalysis()" [disabled]="loading || !claimText.trim()">
               {{ loading ? 'Analyzing…' : 'Extract &amp; analyze' }}
             </button>
@@ -249,6 +274,31 @@ type InputMode = 'demo' | 'url' | 'text';
         color: var(--muted);
       }
 
+      .llm-toggle {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin: 0.85rem 0 0;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .llm-toggle input {
+        width: auto;
+        margin-top: 0.2rem;
+      }
+
+      .llm-toggle small {
+        display: block;
+        font-weight: 400;
+        color: var(--muted);
+        margin-top: 0.15rem;
+      }
+
+      .llm-toggle small.muted {
+        font-style: italic;
+      }
+
       .error {
         color: var(--critical);
         margin: 0.75rem 0 0;
@@ -347,6 +397,8 @@ export class EvaluatePageComponent implements OnInit {
   claimUrl = '';
   claimText = '';
   claimTitle = '';
+  useLlm = true;
+  extractionConfig: ExtractionConfig | null = null;
 
   label: EvaluationLabel | null = null;
   extractionMethod = '';
@@ -369,6 +421,13 @@ export class EvaluatePageComponent implements OnInit {
           this.selectedClaimId = claims[0].claim_id;
           this.selectedClaim = claims[0];
         }
+      },
+    });
+
+    this.api.getExtractionConfig().subscribe({
+      next: (config) => {
+        this.extractionConfig = config;
+        this.useLlm = config.enabled;
       },
     });
   }
@@ -422,8 +481,16 @@ export class EvaluatePageComponent implements OnInit {
   runCustomAnalysis(): void {
     const payload =
       this.inputMode === 'url'
-        ? { url: this.claimUrl.trim(), title: this.claimTitle.trim() || undefined }
-        : { text: this.claimText.trim(), title: this.claimTitle.trim() || undefined };
+        ? {
+            url: this.claimUrl.trim(),
+            title: this.claimTitle.trim() || undefined,
+            use_llm: this.useLlm,
+          }
+        : {
+            text: this.claimText.trim(),
+            title: this.claimTitle.trim() || undefined,
+            use_llm: this.useLlm,
+          };
 
     this.loading = true;
     this.error = '';

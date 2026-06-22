@@ -92,3 +92,11 @@ export interface ExtractResponse {
   extraction_method: string;
   text_preview: string;
 }
+
+export interface ExtractionConfig {
+  enabled: boolean;
+  provider: string;
+  model: string;
+  llm_extraction_enabled: boolean;
+  api_key_configured: boolean;
+}

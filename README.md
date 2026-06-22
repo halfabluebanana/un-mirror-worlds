@@ -28,6 +28,27 @@ Key endpoints:
 - `POST /api/extract` — build a claim schema from a URL or pasted text
 - `POST /api/analyze` — extract + evaluate in one step
 - `POST /api/evaluate` — evaluate a structured claim JSON
+- `GET /api/extraction-config` — LLM provider status
+
+### LLM claim extraction
+
+Deep extraction uses a pluggable `LLMProvider` interface (`backend/app/llm/`). The default provider is Anthropic (Claude with tool-use for structured JSON). Heuristic keyword extraction is used when no API key is set, or when the LLM call fails (unless `use_llm: true` is sent, which fails loudly).
+
+1. Copy `backend/.env.example` to `backend/.env`
+2. Set `ANTHROPIC_API_KEY` and optionally `ANTHROPIC_MODEL`
+3. Restart the backend
+
+```bash
+# backend/.env
+LLM_PROVIDER=anthropic          # or "none" to disable
+LLM_EXTRACTION_ENABLED=true
+ANTHROPIC_API_KEY=sk-ant-...
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+```
+
+To add another provider, implement `LLMProvider` in `backend/app/llm/` and register it in `factory.py`.
+
+Extract/analyze request body accepts optional `use_llm` (boolean): `null` = use LLM when configured, `true` = require LLM, `false` = heuristics only.
 
 ### Frontend (port 4200)
 

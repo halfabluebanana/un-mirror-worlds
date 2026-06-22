@@ -5,6 +5,7 @@ import httpx
 from app.models import IngestRequest, ReportClaim
 from app.services.claim_extractor import extract_claim
 from app.services.evaluation_engine import evaluate_claim, list_twins_summary, load_demo_claims
+from app.services.llm_claim_extractor import llm_extraction_status
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -37,6 +38,11 @@ def demo_claim(claim_id: str):
     return _error("Demo claim not found", 404)
 
 
+@api_bp.get("/extraction-config")
+def extraction_config():
+    return jsonify(llm_extraction_status())
+
+
 @api_bp.post("/extract")
 def extract():
     payload = request.get_json(silent=True)
@@ -56,6 +62,7 @@ def extract():
             url=ingest.url,
             text=ingest.text,
             title=ingest.title,
+            use_llm=ingest.use_llm,
         )
     except httpx.HTTPError as exc:
         return _error(f"Could not fetch URL: {exc}", 422)
@@ -90,6 +97,7 @@ def analyze():
             url=ingest.url,
             text=ingest.text,
             title=ingest.title,
+            use_llm=ingest.use_llm,
         )
         result = evaluate_claim(claim)
     except httpx.HTTPError as exc:

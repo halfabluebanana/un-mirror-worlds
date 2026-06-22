@@ -80,6 +80,7 @@ class IngestRequest(BaseModel):
     url: Optional[str] = None
     text: Optional[str] = None
     title: Optional[str] = None
+    use_llm: Optional[bool] = None
 
 
 class ExtractResponse(BaseModel):

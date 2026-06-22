@@ -6,6 +6,7 @@ import {
   AnalyzeResponse,
   EvaluateResponse,
   ExtractResponse,
+  ExtractionConfig,
   ReportClaim,
   TwinSummary,
 } from '../models/evaluation.model';
@@ -14,6 +15,7 @@ export interface IngestPayload {
   url?: string;
   text?: string;
   title?: string;
+  use_llm?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +30,10 @@ export class ApiService {
 
   getDemoClaims(): Observable<ReportClaim[]> {
     return this.http.get<ReportClaim[]>(`${this.baseUrl}/demo-claims`);
+  }
+
+  getExtractionConfig(): Observable<ExtractionConfig> {
+    return this.http.get<ExtractionConfig>(`${this.baseUrl}/extraction-config`);
   }
 
   evaluate(claim: ReportClaim): Observable<EvaluateResponse> {

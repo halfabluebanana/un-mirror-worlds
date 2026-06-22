@@ -1,4 +1,5 @@
 import hashlib
+import logging
 import re
 from typing import Optional
 from urllib.parse import urlparse
@@ -6,9 +7,13 @@ from urllib.parse import urlparse
 import httpx
 from bs4 import BeautifulSoup
 
+from app.llm.factory import get_llm_provider
 from app.models import IndicatorRef, ReportClaim, SdgRef
 from app.services.datacommons import DataCommonsClient
+from app.services.llm_claim_extractor import extract_claim_with_llm
 from app.services.twin_database import load_twins
+
+logger = logging.getLogger(__name__)
 
 SDG_KEYWORDS = [
     (1, "No Poverty", ["poverty", "poor", "impoverished", "livelihood"]),
@@ -268,10 +273,37 @@ def _title_from_text(text: str, fallback: str) -> str:
     return fallback or "Custom report claim"
 
 
+def _extract_claim_heuristic(
+    text: str,
+    *,
+    url: Optional[str] = None,
+    title: Optional[str] = None,
+) -> ReportClaim:
+    client = DataCommonsClient()
+    country, country_dcid = _detect_country(text, client)
+    indicators = _indicators_from_text(text, client)
+    sdgs = _detect_sdgs(text)
+    seed = url or text[:120]
+
+    return ReportClaim(
+        claim_id=_claim_id("CLM-CUSTOM", seed),
+        title=title or _title_from_text(text, "Custom report claim"),
+        geographic_scope=country,
+        country_dcid=country_dcid,
+        target_outcome_indicator=_detect_outcome(text),
+        sdgs=sdgs,
+        declared_indicators=indicators,
+        declared_sources=_detect_sources(text),
+        analysis_level=_detect_analysis_level(text),
+        summary=text[:600],
+    )
+
+
 def extract_claim(
     url: Optional[str] = None,
     text: Optional[str] = None,
     title: Optional[str] = None,
+    use_llm: Optional[bool] = None,
 ) -> tuple[ReportClaim, str, str]:
     """
     Returns (claim, extraction_method, text_preview).
@@ -289,23 +321,22 @@ def extract_claim(
     if not text or not text.strip():
         raise ValueError("Provide a URL or paste report text to analyze.")
 
-    client = DataCommonsClient()
-    country, country_dcid = _detect_country(text, client)
-    indicators = _indicators_from_text(text, client)
-    sdgs = _detect_sdgs(text)
+    provider = get_llm_provider()
+    should_use_llm = use_llm if use_llm is not None else provider is not None
 
-    seed = url or text[:120]
-    claim = ReportClaim(
-        claim_id=_claim_id("CLM-CUSTOM", seed),
-        title=title or _title_from_text(text, "Custom report claim"),
-        geographic_scope=country,
-        country_dcid=country_dcid,
-        target_outcome_indicator=_detect_outcome(text),
-        sdgs=sdgs,
-        declared_indicators=indicators,
-        declared_sources=_detect_sources(text),
-        analysis_level=_detect_analysis_level(text),
-        summary=text[:600],
-    )
-    method = "url_extraction" if url else "text_extraction"
+    if should_use_llm and provider is not None:
+        try:
+            claim, method = extract_claim_with_llm(
+                text,
+                source_url=url,
+                title_hint=title,
+            )
+            return claim, method, text[:400]
+        except Exception as exc:
+            logger.warning("LLM extraction failed, falling back to heuristics: %s", exc)
+            if use_llm is True:
+                raise ValueError(f"LLM extraction failed: {exc}") from exc
+
+    claim = _extract_claim_heuristic(text, url=url, title=title)
+    method = "heuristic_url_extraction" if url else "heuristic_text_extraction"
     return claim, method, text[:400]
