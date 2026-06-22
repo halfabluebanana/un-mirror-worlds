@@ -11,13 +11,14 @@ import {
 } from '../../models/evaluation.model';
 import { NutritionLabelComponent } from '../nutrition-label/nutrition-label.component';
 import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
+import { IndicatorPanelComponent } from '../indicator-panel/indicator-panel.component';
 
 type InputMode = 'demo' | 'url' | 'text';
 
 @Component({
   selector: 'app-evaluate-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NutritionLabelComponent, TwinPanelComponent],
+  imports: [CommonModule, FormsModule, NutritionLabelComponent, TwinPanelComponent, IndicatorPanelComponent],
   template: `
     <main class="page">
       <section class="hero">
@@ -150,7 +151,11 @@ type InputMode = 'demo' | 'url' | 'text';
               <span class="chip" *ngFor="let sdg of activeClaim.sdgs">SDG {{ sdg.goal }}</span>
             </div>
             <ul class="indicator-list" *ngIf="activeClaim.declared_indicators.length">
-              <li *ngFor="let indicator of activeClaim.declared_indicators">
+              <li
+                *ngFor="let indicator of activeClaim.declared_indicators"
+                class="indicator-link"
+                (click)="openIndicator(indicator.dcid)"
+              >
                 {{ indicator.name }}
               </li>
             </ul>
@@ -160,6 +165,12 @@ type InputMode = 'demo' | 'url' | 'text';
           <div class="label-wrap">
             <app-nutrition-label [label]="label"></app-nutrition-label>
           </div>
+
+          <app-indicator-panel
+            *ngIf="label"
+            [observations]="label.observations"
+            [activeIndicatorDcid]="activeIndicatorDcid"
+          ></app-indicator-panel>
         </div>
       </section>
     </main>
@@ -366,6 +377,17 @@ type InputMode = 'demo' | 'url' | 'text';
         color: var(--muted);
       }
 
+      .indicator-link {
+        cursor: pointer;
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      .indicator-link:hover {
+        color: var(--ink);
+      }
+
       .preview {
         margin: 0.85rem 0 0;
         font-size: 0.82rem;
@@ -405,6 +427,7 @@ export class EvaluatePageComponent implements OnInit {
   textPreview = '';
   loading = false;
   error = '';
+  activeIndicatorDcid: string | null = null;
 
   constructor(private readonly api: ApiService) {}
 
@@ -509,6 +532,13 @@ export class EvaluatePageComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  openIndicator(dcid: string): void {
+    this.activeIndicatorDcid = dcid;
+    setTimeout(() => {
+      document.querySelector('app-indicator-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
   }
 
   private formatError(err: unknown, fallback: string): string {
