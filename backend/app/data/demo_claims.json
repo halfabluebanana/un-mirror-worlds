@@ -1,0 +1,104 @@
+[
+  {
+    "claim_id": "CLM-001",
+    "title": "Child poverty targeting in Somalia using geospatial proxies",
+    "geographic_scope": "Somalia",
+    "country_dcid": "country/SOM",
+    "m49_code": "706",
+    "target_outcome_indicator": "Child poverty",
+    "analysis_level": "municipal",
+    "sdgs": [
+      { "goal": 1, "name": "No Poverty" },
+      { "goal": 3, "name": "Good Health and Well-being" },
+      { "goal": 4, "name": "Quality Education" },
+      { "goal": 5, "name": "Gender Equality" },
+      { "goal": 8, "name": "Decent Work and Economic Growth" }
+    ],
+    "declared_indicators": [
+      {
+        "dcid": "undata/sdg/SE_PRE_PARTN.SEX--_T",
+        "name": "Participation rate in organized learning",
+        "sdg_indicator": "4.2.2"
+      },
+      {
+        "dcid": "undata/sdg/EN_POP_DNST",
+        "name": "Population density",
+        "sdg_indicator": "11.1.1"
+      },
+      {
+        "dcid": "undata/sdg/SI_POV_DAY1.AGE--_T__SEX--_T__URBANIZATION--_T",
+        "name": "Proportion below international poverty line",
+        "sdg_indicator": "1.1.1"
+      }
+    ],
+    "declared_sources": [
+      "UN Data Commons",
+      "Google Open Buildings",
+      "Global Data Lab v23.1"
+    ],
+    "summary": "Demo claim modeled on the blueprint Somalia reference case with municipal-level poverty targeting."
+  },
+  {
+    "claim_id": "CLM-002",
+    "title": "Early childhood service expansion site selection",
+    "geographic_scope": "Zambia",
+    "country_dcid": "country/ZMB",
+    "m49_code": "894",
+    "target_outcome_indicator": "Early childhood development access",
+    "analysis_level": "subnational",
+    "sdgs": [
+      { "goal": 4, "name": "Quality Education" },
+      { "goal": 3, "name": "Good Health and Well-being" },
+      { "goal": 6, "name": "Clean Water and Sanitation" }
+    ],
+    "declared_indicators": [
+      {
+        "dcid": "undata/sdg/SE_PRE_PARTN.SEX--_T",
+        "name": "Participation rate in organized learning",
+        "sdg_indicator": "4.2.2"
+      },
+      {
+        "dcid": "undata/sdg/SH_H2O_SAFE.URBANIZATION--_T",
+        "name": "Safely managed drinking water",
+        "sdg_indicator": "6.1.1"
+      }
+    ],
+    "declared_sources": [
+      "UN Data Commons",
+      "ZAMSTATS",
+      "GRID3"
+    ],
+    "summary": "Demo claim aligned with the Zambia ECDE geospatial case study in the historical twin database."
+  },
+  {
+    "claim_id": "CLM-003",
+    "title": "Food security operations planning in Afghanistan",
+    "geographic_scope": "Afghanistan",
+    "country_dcid": "country/AFG",
+    "m49_code": "004",
+    "target_outcome_indicator": "Food insecurity reduction",
+    "analysis_level": "subnational",
+    "sdgs": [
+      { "goal": 2, "name": "Zero Hunger" },
+      { "goal": 1, "name": "No Poverty" },
+      { "goal": 16, "name": "Peace, Justice and Strong Institutions" }
+    ],
+    "declared_indicators": [
+      {
+        "dcid": "undata/sdg/SN_ITK_DEFC",
+        "name": "Prevalence of undernourishment",
+        "sdg_indicator": "2.1.1"
+      },
+      {
+        "dcid": "undata/sdg/AG_PRD_FIESMS.AGE--_T__SEX--_T__URBANIZATION--_T",
+        "name": "Prevalence of moderate or severe food insecurity",
+        "sdg_indicator": "2.1.2"
+      }
+    ],
+    "declared_sources": [
+      "UN Data Commons",
+      "WFP operational GIS layers"
+    ],
+    "summary": "Demo claim based on the WFP Afghanistan GIS case study."
+  }
+]

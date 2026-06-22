@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "undata": {
+      "url": "https://dc-un-dev-dc-datacommons-service-72utkhfqvq-uc.a.run.app/mcp"
+    },
+    "undata-cdc": {
+      "url": "https://cdc-un-cs-datacommons-web-service-620046630330.us-central1.run.app/mcp"
+    },
+    "undata-sdmx": {
+      "url": "https://un-sdmx-demo-dc-datacommons-service-496370955550.us-central1.run.app/mcp"
+    }
+  }
+}
