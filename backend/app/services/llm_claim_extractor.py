@@ -5,7 +5,7 @@ from app.llm.drafts import LlmClaimDraft, LlmIndicatorDraft
 from app.llm.factory import get_llm_provider
 from app.llm.prompts import CLAIM_EXTRACTION_SYSTEM, CLAIM_EXTRACTION_USER
 from app.llm.base import LLMMessage
-from app.models import IndicatorRef, ReportClaim, SdgRef
+from app.models import IndicatorProvenance, IndicatorRef, ReportClaim, SdgRef
 from app.services.datacommons import DataCommonsClient
 
 
@@ -64,11 +64,17 @@ def _enrich_draft(
         country_dcid = client.resolve_country(draft.geographic_scope)
 
     indicators = []
+    provenance: dict[str, IndicatorProvenance] = {}
     seen = set()
     for item in draft.declared_indicators:
         resolved = _resolve_indicator_dcid(item, client, seen)
         if resolved:
             indicators.append(resolved)
+            provenance[resolved.dcid] = IndicatorProvenance(
+                spatial_resolution=item.spatial_resolution,
+                reference_year_start=item.reference_year_start,
+                reference_year_end=item.reference_year_end,
+            )
 
     analysis_level = draft.analysis_level.lower().strip()
     if analysis_level not in ("national", "subnational", "municipal"):
@@ -86,6 +92,10 @@ def _enrich_draft(
         declared_sources=draft.declared_sources or ["Unspecified public datasets"],
         analysis_level=analysis_level,
         summary=draft.summary.strip()[:800],
+        claim_reference_year=draft.claim_reference_year,
+        intervention_start_year=draft.intervention_start_year,
+        intervention_end_year=draft.intervention_end_year,
+        indicator_provenance=provenance,
     )
 
 

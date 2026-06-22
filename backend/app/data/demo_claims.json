@@ -7,6 +7,7 @@
     "m49_code": "706",
     "target_outcome_indicator": "Child poverty",
     "analysis_level": "municipal",
+    "claim_reference_year": 2026,
     "sdgs": [
       { "goal": 1, "name": "No Poverty" },
       { "goal": 3, "name": "Good Health and Well-being" },
@@ -36,6 +37,23 @@
       "Google Open Buildings",
       "Global Data Lab v23.1"
     ],
+    "indicator_provenance": {
+      "undata/sdg/SE_PRE_PARTN.SEX--_T": {
+        "spatial_resolution": "national",
+        "reference_year_start": 2014,
+        "reference_year_end": 2014
+      },
+      "undata/sdg/EN_POP_DNST": {
+        "spatial_resolution": "point",
+        "reference_year_start": 2023,
+        "reference_year_end": 2023
+      },
+      "undata/sdg/SI_POV_DAY1.AGE--_T__SEX--_T__URBANIZATION--_T": {
+        "spatial_resolution": "national",
+        "reference_year_start": 2014,
+        "reference_year_end": 2014
+      }
+    },
     "summary": "Demo claim modeled on the blueprint Somalia reference case with municipal-level poverty targeting."
   },
   {
@@ -46,6 +64,7 @@
     "m49_code": "894",
     "target_outcome_indicator": "Early childhood development access",
     "analysis_level": "subnational",
+    "claim_reference_year": 2025,
     "sdgs": [
       { "goal": 4, "name": "Quality Education" },
       { "goal": 3, "name": "Good Health and Well-being" },
@@ -68,6 +87,18 @@
       "ZAMSTATS",
       "GRID3"
     ],
+    "indicator_provenance": {
+      "undata/sdg/SE_PRE_PARTN.SEX--_T": {
+        "spatial_resolution": "national",
+        "reference_year_start": 2018,
+        "reference_year_end": 2018
+      },
+      "undata/sdg/SH_H2O_SAFE.URBANIZATION--_T": {
+        "spatial_resolution": "subnational",
+        "reference_year_start": 2022,
+        "reference_year_end": 2022
+      }
+    },
     "summary": "Demo claim aligned with the Zambia ECDE geospatial case study in the historical twin database."
   },
   {
@@ -78,6 +109,7 @@
     "m49_code": "004",
     "target_outcome_indicator": "Food insecurity reduction",
     "analysis_level": "subnational",
+    "claim_reference_year": 2025,
     "sdgs": [
       { "goal": 2, "name": "Zero Hunger" },
       { "goal": 1, "name": "No Poverty" },
@@ -99,6 +131,18 @@
       "UN Data Commons",
       "WFP operational GIS layers"
     ],
+    "indicator_provenance": {
+      "undata/sdg/SN_ITK_DEFC": {
+        "spatial_resolution": "national",
+        "reference_year_start": 2021,
+        "reference_year_end": 2021
+      },
+      "undata/sdg/AG_PRD_FIESMS.AGE--_T__SEX--_T__URBANIZATION--_T": {
+        "spatial_resolution": "national",
+        "reference_year_start": 2021,
+        "reference_year_end": 2021
+      }
+    },
     "summary": "Demo claim based on the WFP Afghanistan GIS case study."
   }
 ]

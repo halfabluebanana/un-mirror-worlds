@@ -2,13 +2,16 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from app.models import SdgRef
+from app.models import IndicatorProvenance, SdgRef, SpatialResolution
 
 
 class LlmIndicatorDraft(BaseModel):
     name: str
     dcid: Optional[str] = None
     sdg_indicator: Optional[str] = None
+    spatial_resolution: SpatialResolution = "unknown"
+    reference_year_start: Optional[int] = None
+    reference_year_end: Optional[int] = None
     evidence_quote: Optional[str] = Field(
         default=None,
         description="Short quote from the source supporting this indicator",
@@ -26,6 +29,12 @@ class LlmClaimDraft(BaseModel):
     analysis_level: str = Field(
         description="One of: national, subnational, municipal",
     )
+    claim_reference_year: Optional[int] = Field(
+        default=None,
+        description="Year the report's conclusions or intervention target",
+    )
+    intervention_start_year: Optional[int] = None
+    intervention_end_year: Optional[int] = None
     summary: str = Field(
         description="Two to three sentences summarizing the empirical claim and methods",
     )

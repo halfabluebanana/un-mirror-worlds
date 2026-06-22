@@ -9,6 +9,13 @@ export interface IndicatorRef {
   sdg_indicator?: string | null;
 }
 
+export interface IndicatorProvenance {
+  spatial_resolution: string;
+  reference_year_start?: number | null;
+  reference_year_end?: number | null;
+  geographic_entity_dcid?: string | null;
+}
+
 export interface ReportClaim {
   claim_id: string;
   title: string;
@@ -21,6 +28,10 @@ export interface ReportClaim {
   declared_sources: string[];
   analysis_level: string;
   summary: string;
+  claim_reference_year?: number | null;
+  intervention_start_year?: number | null;
+  intervention_end_year?: number | null;
+  indicator_provenance?: Record<string, IndicatorProvenance>;
 }
 
 export interface TwinSummary {
@@ -69,6 +80,8 @@ export interface EvaluationLabel {
   indicator_source_variance: ScoreDetail;
   indicator_correlation: ScoreDetail;
   indicator_comprehensiveness: ScoreDetail;
+  geographic_resolution_fit: ScoreDetail;
+  reference_period_fit: ScoreDetail;
   missing_source_recommendations: string[];
   related_initiatives: TwinMatch[];
   badges: SuitabilityBadge[];
