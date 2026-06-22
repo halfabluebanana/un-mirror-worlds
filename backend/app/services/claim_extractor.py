@@ -8,7 +8,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from app.llm.factory import get_llm_provider
-from app.models import IndicatorRef, ReportClaim, SdgRef
+from app.models import IndicatorProvenance, IndicatorRef, ReportClaim, SdgRef
 from app.services.datacommons import DataCommonsClient
 from app.services.llm_claim_extractor import extract_claim_with_llm
 from app.services.twin_database import load_twins
@@ -273,6 +273,62 @@ def _title_from_text(text: str, fallback: str) -> str:
     return fallback or "Custom report claim"
 
 
+def _extract_years(text: str) -> list[int]:
+    current_year = 2026
+    years = []
+    for match in re.finditer(r"\b(19|20)\d{2}\b", text):
+        year = int(match.group())
+        if 1990 <= year <= current_year + 5:
+            years.append(year)
+    return years
+
+
+def _infer_claim_reference_year(text: str) -> Optional[int]:
+    lowered = text.lower()
+    years = _extract_years(text)
+    if not years:
+        return None
+
+    for year in sorted(years, reverse=True):
+        context_start = max(0, lowered.find(str(year)) - 40)
+        context = lowered[context_start : context_start + 80]
+        if any(
+            token in context
+            for token in ("plan", "target", "by ", "202", "rollout", "strategy", "forecast")
+        ):
+            return year
+    return max(years)
+
+
+def _infer_indicator_provenance(
+    text: str,
+    indicators: list[IndicatorRef],
+) -> dict[str, IndicatorProvenance]:
+    lowered = text.lower()
+    years = _extract_years(text)
+    reference_year = years[0] if len(years) == 1 else (min(years) if years else None)
+
+    gis_resolution = "point" if any(
+        token in lowered for token in ("grid", "geospatial", "100m", "open buildings", "gis layer")
+    ) else None
+    subnational_resolution = "subnational" if any(
+        token in lowered
+        for token in ("district", "provincial", "regional", "subnational", "admin")
+    ) else None
+
+    provenance: dict[str, IndicatorProvenance] = {}
+    for indicator in indicators:
+        spatial = gis_resolution or subnational_resolution or "unknown"
+        if indicator.dcid.startswith("undata/sdg/") and spatial == "unknown":
+            spatial = "national"
+        provenance[indicator.dcid] = IndicatorProvenance(
+            spatial_resolution=spatial,
+            reference_year_start=reference_year,
+            reference_year_end=reference_year,
+        )
+    return provenance
+
+
 def _extract_claim_heuristic(
     text: str,
     *,
@@ -296,6 +352,8 @@ def _extract_claim_heuristic(
         declared_sources=_detect_sources(text),
         analysis_level=_detect_analysis_level(text),
         summary=text[:600],
+        claim_reference_year=_infer_claim_reference_year(text),
+        indicator_provenance=_infer_indicator_provenance(text, indicators),
     )
 
 
