@@ -90,36 +90,6 @@ import { EvaluationLabel } from '../../models/evaluation.model';
         </ul>
       </section --->
 
-      <section *ngIf="label.related_initiatives.length" class="nf-section">
-        <p class="nf-section-title">Related initiatives</p>
-        <div class="nf-rule nf-rule--medium"></div>
-        <div *ngFor="let twin of label.related_initiatives; let last = last" class="nf-twin">
-          <div class="nf-row nf-row--main">
-            <span class="nf-nutrient nf-nutrient--bold">{{ twin.title }}</span>
-            <span class="nf-amount">{{ twin.similarity_score * 100 | number: '1.0-0' }}%</span>
-          </div>
-          <p class="nf-note nf-note--indent">
-            {{ twin.country_name }} · SDGs {{ twin.matched_sdgs.join(', ') || 'n/a' }} ·
-            {{ twin.matched_indicators.length }} shared indicators
-          </p>
-          <a class="nf-link" [href]="twin.url" target="_blank" rel="noreferrer">View case study</a>
-          <div class="nf-rule" *ngIf="!last"></div>
-        </div>
-      </section>
-
-      <!--- section *ngIf="label.observations.length" class="nf-section">
-        <p class="nf-section-title">UN Data Commons observations</p>
-        <div class="nf-rule nf-rule--medium"></div>
-        <div *ngFor="let point of label.observations; let last = last" class="nf-obs-row">
-          <div class="nf-row">
-            <span class="nf-nutrient">{{ point.name }}</span>
-            <span class="nf-amount">{{ point.value ?? 'n/a' }}</span>
-          </div>
-          <p class="nf-note nf-note--indent">{{ point.date ?? 'date n/a' }}</p>
-          <div class="nf-rule" *ngIf="!last"></div>
-        </div>
-      </section --->
-
       <div class="nf-rule nf-rule--thick"></div>
       <p class="nf-footnote">
         * Percent confidence scores are weighted from source variance, indicator correlation,
@@ -281,19 +251,6 @@ import { EvaluationLabel } from '../../models/evaluation.model';
 
       .nf-list li {
         margin-bottom: 0.2rem;
-      }
-
-      .nf-twin {
-        margin-bottom: 0.15rem;
-      }
-
-      .nf-link {
-        display: inline-block;
-        margin: 0.1rem 0 0.2rem 1rem;
-        font-size: 0.68rem;
-        font-weight: 700;
-        color: #000;
-        text-decoration: underline;
       }
 
       .nf-footnote {
