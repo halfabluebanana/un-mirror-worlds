@@ -33,13 +33,6 @@ import { EvaluationLabel } from '../../models/evaluation.model';
       <div class="nf-rule nf-rule--medium"></div>
 
       <div class="nf-row nf-row--main">
-        <span class="nf-nutrient">Indicator source variance</span>
-        <span class="nf-amount">{{ label.indicator_source_variance.score | number: '1.0-0' }}%</span>
-      </div>
-      <p class="nf-note">{{ label.indicator_source_variance.explanation }}</p>
-      <div class="nf-rule"></div>
-
-      <div class="nf-row nf-row--main">
         <span class="nf-nutrient">Indicator correlation</span>
         <span class="nf-amount">{{ label.indicator_correlation.score | number: '1.0-0' }}%</span>
       </div>
@@ -51,6 +44,14 @@ import { EvaluationLabel } from '../../models/evaluation.model';
         <span class="nf-amount">{{ label.indicator_comprehensiveness.score | number: '1.0-0' }}%</span>
       </div>
       <p class="nf-note">{{ label.indicator_comprehensiveness.explanation }}</p>
+
+      <div class="nf-rule"></div>
+      <div class="nf-row nf-row--main">
+        <span class="nf-nutrient">Indicator source variance</span>
+        <span class="nf-amount">{{ label.indicator_source_variance.score | number: '1.0-0' }}%</span>
+      </div>
+      <p class="nf-note">{{ label.indicator_source_variance.explanation }}</p>
+      
 
       <div class="nf-rule nf-rule--thick"></div>
 
@@ -67,15 +68,15 @@ import { EvaluationLabel } from '../../models/evaluation.model';
         </div>
       </section>
 
-      <section *ngIf="label.missing_source_recommendations.length" class="nf-section">
+      <!--- section *ngIf="label.missing_source_recommendations.length" class="nf-section">
         <p class="nf-section-title">Missing sources</p>
         <div class="nf-rule nf-rule--medium"></div>
         <ul class="nf-list">
           <li *ngFor="let item of label.missing_source_recommendations">{{ item }}</li>
         </ul>
-      </section>
+      </section --->
 
-      <section *ngIf="label.related_initiatives.length" class="nf-section">
+      <!--- section *ngIf="label.related_initiatives.length" class="nf-section">
         <p class="nf-section-title">Related initiatives</p>
         <div class="nf-rule nf-rule--medium"></div>
         <div *ngFor="let twin of label.related_initiatives; let last = last" class="nf-twin">
@@ -103,7 +104,7 @@ import { EvaluationLabel } from '../../models/evaluation.model';
           <p class="nf-note nf-note--indent">{{ point.date ?? 'date n/a' }}</p>
           <div class="nf-rule" *ngIf="!last"></div>
         </div>
-      </section>
+      </section --->
 
       <div class="nf-rule nf-rule--thick"></div>
       <p class="nf-footnote">
