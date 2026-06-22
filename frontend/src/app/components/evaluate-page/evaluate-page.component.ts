@@ -371,7 +371,7 @@ type InputMode = 'demo' | 'url' | 'text';
       }
 
       .chip {
-        border-radius: 999px;
+        border-radius: 4px;
         padding: 0.28rem 0.75rem;
         font-size: 0.78rem;
         font-weight: 700;
@@ -556,10 +556,10 @@ export class EvaluatePageComponent implements OnInit {
   }
 
   private readonly SDG_COLORS: Record<number, string> = {
-    1: '#E5243B', 2: '#DDA63A', 3: '#4C9F38', 4: '#C5192D', 5: '#FF3A21',
-    6: '#26BDE2', 7: '#FCC30B', 8: '#A21942', 9: '#FD6925', 10: '#DD1367',
-    11: '#FD9D24', 12: '#BF8B2E', 13: '#3F7E44', 14: '#0A97D9', 15: '#56C02B',
-    16: '#00689D', 17: '#19486A',
+    1:  '#B07080', 2:  '#B09A55', 3:  '#5A9060', 4:  '#9A5060', 5:  '#BF7868',
+    6:  '#5898B0', 7:  '#C0A840', 8:  '#7A4458', 9:  '#B87045', 10: '#A85075',
+    11: '#BE8840', 12: '#9A8448', 13: '#4A7850', 14: '#3A88AA', 15: '#5A9050',
+    16: '#3A7088', 17: '#3A5870',
   };
 
   sdgColor(goal: number): string {
@@ -567,7 +567,7 @@ export class EvaluatePageComponent implements OnInit {
   }
 
   sdgTextColor(goal: number): string {
-    return goal === 7 ? '#1a1a1a' : '#fff';
+    return goal === 7 ? '#2C1A0E' : '#fff';
   }
 
   private formatError(err: unknown, fallback: string): string {

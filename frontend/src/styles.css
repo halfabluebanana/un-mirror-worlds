@@ -1,6 +1,6 @@
 :root {
-  --bg: #F0E8D5;
-  --panel: #FAF5E9;
+  --bg: #F5F3EF;
+  --panel: #FDFCFB;
   --ink: #2C1A0E;
   --muted: #7A6855;
   --accent: #C96527;
@@ -10,7 +10,7 @@
   --warning: #9A5015;
   --critical: #9B1C1C;
   --ok: #2D6A4F;
-  --border: #C9B896;
+  --border: #D5CCC0;
   --label-bg: #0f172a;
   --label-ink: #f8fafc;
 }
