@@ -79,3 +79,16 @@ export interface EvaluationLabel {
 export interface EvaluateResponse {
   label: EvaluationLabel;
 }
+
+export interface AnalyzeResponse {
+  claim: ReportClaim;
+  extraction_method: string;
+  text_preview: string;
+  label: EvaluationLabel;
+}
+
+export interface ExtractResponse {
+  claim: ReportClaim;
+  extraction_method: string;
+  text_preview: string;
+}

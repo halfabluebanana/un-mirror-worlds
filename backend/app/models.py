@@ -74,3 +74,22 @@ class EvaluationLabel(BaseModel):
 
 class EvaluateResponse(BaseModel):
     label: EvaluationLabel
+
+
+class IngestRequest(BaseModel):
+    url: Optional[str] = None
+    text: Optional[str] = None
+    title: Optional[str] = None
+
+
+class ExtractResponse(BaseModel):
+    claim: ReportClaim
+    extraction_method: str
+    text_preview: str
+
+
+class AnalyzeResponse(BaseModel):
+    claim: ReportClaim
+    extraction_method: str
+    text_preview: str
+    label: EvaluationLabel

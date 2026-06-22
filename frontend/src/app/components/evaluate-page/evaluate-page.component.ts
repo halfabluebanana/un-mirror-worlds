@@ -11,6 +11,8 @@ import {
 import { NutritionLabelComponent } from '../nutrition-label/nutrition-label.component';
 import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
 
+type InputMode = 'demo' | 'url' | 'text';
+
 @Component({
   selector: 'app-evaluate-page',
   standalone: true,
@@ -22,21 +24,85 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
           <p class="eyebrow">Mirror Worlds demo</p>
           <h1>Data Suitability &amp; Confidence</h1>
           <p>
-            Evaluate SDG report claims against historical twins, UN Data Commons
-            observations, and custodian metadata. Output follows the nutrition-label
-            pattern from the UNSD blueprint.
+            Paste a case study URL, free text, or use a demo claim. The backend
+            extracts SDGs, geography, indicators, and sources, then scores the
+            claim against historical twins and UN Data Commons.
           </p>
         </div>
+
         <div class="hero-card">
-          <label for="claimSelect">Demo claim</label>
-          <select id="claimSelect" [(ngModel)]="selectedClaimId" (ngModelChange)="onClaimChange()">
-            <option *ngFor="let claim of claims" [value]="claim.claim_id">
-              {{ claim.claim_id }} · {{ claim.title }}
-            </option>
-          </select>
-          <button type="button" (click)="runEvaluation()" [disabled]="loading || !selectedClaim">
-            {{ loading ? 'Evaluating…' : 'Generate label' }}
-          </button>
+          <div class="mode-tabs">
+            <button
+              type="button"
+              class="tab"
+              [class.active]="inputMode === 'demo'"
+              (click)="setMode('demo')"
+            >
+              Demo
+            </button>
+            <button
+              type="button"
+              class="tab"
+              [class.active]="inputMode === 'url'"
+              (click)="setMode('url')"
+            >
+              URL
+            </button>
+            <button
+              type="button"
+              class="tab"
+              [class.active]="inputMode === 'text'"
+              (click)="setMode('text')"
+            >
+              Text
+            </button>
+          </div>
+
+          <ng-container *ngIf="inputMode === 'demo'">
+            <label for="claimSelect">Demo claim</label>
+            <select id="claimSelect" [(ngModel)]="selectedClaimId" (ngModelChange)="onDemoChange()">
+              <option *ngFor="let claim of claims" [value]="claim.claim_id">
+                {{ claim.claim_id }} · {{ claim.title }}
+              </option>
+            </select>
+            <button type="button" (click)="runDemoEvaluation()" [disabled]="loading || !selectedClaim">
+              {{ loading ? 'Evaluating…' : 'Generate label' }}
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="inputMode === 'url'">
+            <label for="claimUrl">Case study or report URL</label>
+            <input
+              id="claimUrl"
+              type="url"
+              [(ngModel)]="claimUrl"
+              placeholder="https://data.unicef.org/data-for-action/..."
+            />
+            <label for="claimTitle">Title override (optional)</label>
+            <input id="claimTitle" type="text" [(ngModel)]="claimTitle" placeholder="Custom title" />
+            <button type="button" (click)="runCustomAnalysis()" [disabled]="loading || !claimUrl.trim()">
+              {{ loading ? 'Analyzing…' : 'Extract &amp; analyze' }}
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="inputMode === 'text'">
+            <label for="claimText">Report text</label>
+            <textarea
+              id="claimText"
+              rows="8"
+              [(ngModel)]="claimText"
+              placeholder="Paste policy text, an executive summary, or methodology excerpt…"
+            ></textarea>
+            <label for="textTitle">Title (optional)</label>
+            <input id="textTitle" type="text" [(ngModel)]="claimTitle" placeholder="Report title" />
+            <button type="button" (click)="runCustomAnalysis()" [disabled]="loading || !claimText.trim()">
+              {{ loading ? 'Analyzing…' : 'Extract &amp; analyze' }}
+            </button>
+          </ng-container>
+
+          <p class="hint" *ngIf="extractionMethod">
+            Extraction: <strong>{{ extractionMethod }}</strong>
+          </p>
           <p class="error" *ngIf="error">{{ error }}</p>
         </div>
       </section>
@@ -45,18 +111,25 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
         <app-twin-panel [twins]="twins"></app-twin-panel>
 
         <div class="result-column">
-          <section class="claim-card" *ngIf="selectedClaim">
+          <section class="claim-card" *ngIf="activeClaim">
             <h2>Extracted claim schema</h2>
             <dl>
-              <div><dt>Claim ID</dt><dd>{{ selectedClaim.claim_id }}</dd></div>
-              <div><dt>Geography</dt><dd>{{ selectedClaim.geographic_scope }}</dd></div>
-              <div><dt>Target outcome</dt><dd>{{ selectedClaim.target_outcome_indicator }}</dd></div>
-              <div><dt>Analysis level</dt><dd>{{ selectedClaim.analysis_level }}</dd></div>
-              <div><dt>Declared sources</dt><dd>{{ selectedClaim.declared_sources.join(', ') }}</dd></div>
+              <div><dt>Claim ID</dt><dd>{{ activeClaim.claim_id }}</dd></div>
+              <div><dt>Geography</dt><dd>{{ activeClaim.geographic_scope }}</dd></div>
+              <div><dt>Target outcome</dt><dd>{{ activeClaim.target_outcome_indicator }}</dd></div>
+              <div><dt>Analysis level</dt><dd>{{ activeClaim.analysis_level }}</dd></div>
+              <div><dt>Declared sources</dt><dd>{{ activeClaim.declared_sources.join(', ') }}</dd></div>
+              <div><dt>Indicators</dt><dd>{{ activeClaim.declared_indicators.length }} detected</dd></div>
             </dl>
             <div class="chip-row">
-              <span class="chip" *ngFor="let sdg of selectedClaim.sdgs">SDG {{ sdg.goal }}</span>
+              <span class="chip" *ngFor="let sdg of activeClaim.sdgs">SDG {{ sdg.goal }}</span>
             </div>
+            <ul class="indicator-list" *ngIf="activeClaim.declared_indicators.length">
+              <li *ngFor="let indicator of activeClaim.declared_indicators">
+                {{ indicator.name }}
+              </li>
+            </ul>
+            <p class="preview" *ngIf="textPreview">{{ textPreview }}</p>
           </section>
 
           <div class="label-wrap">
@@ -107,6 +180,29 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
         padding: 1.25rem;
       }
 
+      .mode-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.35rem;
+        margin-bottom: 1rem;
+      }
+
+      .tab {
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--ink);
+        border-radius: 8px;
+        padding: 0.5rem 0.65rem;
+        font-weight: 600;
+        margin-top: 0;
+      }
+
+      .tab.active {
+        background: var(--ink);
+        color: #fff;
+        border-color: var(--ink);
+      }
+
       label {
         display: block;
         margin-bottom: 0.45rem;
@@ -114,24 +210,43 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
       }
 
       select,
-      button {
+      input,
+      textarea,
+      button.primary-action {
         width: 100%;
         border-radius: 10px;
         border: 1px solid var(--border);
         padding: 0.75rem 0.85rem;
+        font: inherit;
       }
 
-      button {
+      textarea {
+        resize: vertical;
+        min-height: 140px;
+      }
+
+      button.primary-action,
+      .hero-card > ng-container button,
+      .hero-card button:not(.tab) {
         margin-top: 0.85rem;
         background: var(--accent);
         color: white;
         border: none;
         font-weight: 600;
+        width: 100%;
+        border-radius: 10px;
+        padding: 0.75rem 0.85rem;
       }
 
       button:disabled {
         opacity: 0.65;
         cursor: not-allowed;
+      }
+
+      .hint {
+        margin: 0.75rem 0 0;
+        font-size: 0.85rem;
+        color: var(--muted);
       }
 
       .error {
@@ -194,6 +309,22 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
         font-weight: 600;
       }
 
+      .indicator-list {
+        margin: 0.85rem 0 0;
+        padding-left: 1.1rem;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+
+      .preview {
+        margin: 0.85rem 0 0;
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.45;
+        border-top: 1px solid var(--border);
+        padding-top: 0.75rem;
+      }
+
       @media (max-width: 900px) {
         .hero,
         .layout,
@@ -207,9 +338,19 @@ import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
 export class EvaluatePageComponent implements OnInit {
   twins: TwinSummary[] = [];
   claims: ReportClaim[] = [];
+  inputMode: InputMode = 'url';
+
   selectedClaimId = '';
   selectedClaim: ReportClaim | null = null;
+  activeClaim: ReportClaim | null = null;
+
+  claimUrl = '';
+  claimText = '';
+  claimTitle = '';
+
   label: EvaluationLabel | null = null;
+  extractionMethod = '';
+  textPreview = '';
   loading = false;
   error = '';
 
@@ -229,33 +370,90 @@ export class EvaluatePageComponent implements OnInit {
           this.selectedClaim = claims[0];
         }
       },
-      error: () => (this.error = 'Could not load demo claims. Is the API running on :8000?'),
     });
   }
 
-  onClaimChange(): void {
-    this.selectedClaim =
-      this.claims.find((claim) => claim.claim_id === this.selectedClaimId) ?? null;
-    this.label = null;
+  setMode(mode: InputMode): void {
+    this.inputMode = mode;
     this.error = '';
+    this.label = null;
+    this.extractionMethod = '';
+    this.textPreview = '';
+
+    if (mode === 'demo') {
+      this.activeClaim = this.selectedClaim;
+    } else {
+      this.activeClaim = null;
+    }
   }
 
-  runEvaluation(): void {
+  onDemoChange(): void {
+    this.selectedClaim =
+      this.claims.find((claim) => claim.claim_id === this.selectedClaimId) ?? null;
+    this.activeClaim = this.selectedClaim;
+    this.label = null;
+    this.error = '';
+    this.extractionMethod = '';
+    this.textPreview = '';
+  }
+
+  runDemoEvaluation(): void {
     if (!this.selectedClaim) {
       return;
     }
 
     this.loading = true;
     this.error = '';
+    this.extractionMethod = 'demo_claim';
+    this.textPreview = this.selectedClaim.summary;
     this.api.evaluate(this.selectedClaim).subscribe({
       next: (response) => {
+        this.activeClaim = this.selectedClaim;
         this.label = response.label;
         this.loading = false;
       },
-      error: () => {
-        this.error = 'Evaluation failed. Confirm the Python API is running on port 8000.';
+      error: (err) => {
+        this.error = this.formatError(err, 'Evaluation failed.');
         this.loading = false;
       },
     });
+  }
+
+  runCustomAnalysis(): void {
+    const payload =
+      this.inputMode === 'url'
+        ? { url: this.claimUrl.trim(), title: this.claimTitle.trim() || undefined }
+        : { text: this.claimText.trim(), title: this.claimTitle.trim() || undefined };
+
+    this.loading = true;
+    this.error = '';
+    this.label = null;
+
+    this.api.analyze(payload).subscribe({
+      next: (response) => {
+        this.activeClaim = response.claim;
+        this.label = response.label;
+        this.extractionMethod = response.extraction_method;
+        this.textPreview = response.text_preview;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = this.formatError(err, 'Analysis failed.');
+        this.loading = false;
+      },
+    });
+  }
+
+  private formatError(err: unknown, fallback: string): string {
+    if (err && typeof err === 'object' && 'error' in err) {
+      const body = (err as { error?: unknown }).error;
+      if (typeof body === 'string') {
+        return body;
+      }
+      if (body && typeof body === 'object' && 'description' in body) {
+        return String((body as { description: unknown }).description);
+      }
+    }
+    return fallback;
   }
 }

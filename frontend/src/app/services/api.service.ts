@@ -3,10 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import {
+  AnalyzeResponse,
   EvaluateResponse,
+  ExtractResponse,
   ReportClaim,
   TwinSummary,
 } from '../models/evaluation.model';
+
+export interface IngestPayload {
+  url?: string;
+  text?: string;
+  title?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -24,5 +32,13 @@ export class ApiService {
 
   evaluate(claim: ReportClaim): Observable<EvaluateResponse> {
     return this.http.post<EvaluateResponse>(`${this.baseUrl}/evaluate`, claim);
+  }
+
+  extract(payload: IngestPayload): Observable<ExtractResponse> {
+    return this.http.post<ExtractResponse>(`${this.baseUrl}/extract`, payload);
+  }
+
+  analyze(payload: IngestPayload): Observable<AnalyzeResponse> {
+    return this.http.post<AnalyzeResponse>(`${this.baseUrl}/analyze`, payload);
   }
 }
