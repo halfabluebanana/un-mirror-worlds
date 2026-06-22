@@ -16,7 +16,26 @@ _IMPORT_NAME_METADATA: dict[str, dict] = {
     "undesa":   {"agency": "UNDESA",        "method": "Direct count / projection"},
     "wfp":      {"agency": "WFP",           "method": "Operational survey"},
     "unhcr":    {"agency": "UNHCR",         "method": "Administrative / reported"},
+    "un_sdg":   {"agency": "UN SDG Registry", "method": "National reported / SDG custodian"},
 }
+
+
+def _normalise_dcid(dcid: str) -> str:
+    """Strip 'undata/' prefix and SDG dimension suffixes before querying the DC API.
+
+    MCP tools return DCIDs like 'undata/sdg/SE_PRE_PARTN.SEX--_T' but the DC
+    REST API only recognises 'sdg/SE_PRE_PARTN'. Dimension disaggregation codes
+    always contain '--' in the segment after the first dot.
+    """
+    if dcid.startswith("undata/"):
+        dcid = dcid[len("undata/"):]
+    parts = dcid.split("/")
+    last = parts[-1]
+    dot_idx = last.find(".")
+    if dot_idx != -1 and "--" in last[dot_idx:]:
+        parts[-1] = last[:dot_idx]
+        dcid = "/".join(parts)
+    return dcid
 
 
 class DataCommonsClient:
@@ -59,12 +78,13 @@ class DataCommonsClient:
         if not entity_dcid or not variable_dcids:
             return []
 
+        normalised_dcids = list(dict.fromkeys(_normalise_dcid(d) for d in variable_dcids))
         data = self._post(
             "/v2/observation",
             {
                 "date": "LATEST",
                 "entity": {"dcids": [entity_dcid]},
-                "variable": {"dcids": variable_dcids},
+                "variable": {"dcids": normalised_dcids},
                 "select": ["entity", "variable", "value", "date", "facet"],
             },
         )
@@ -74,9 +94,10 @@ class DataCommonsClient:
         by_variable = data.get("byVariable", {})
 
         for dcid in variable_dcids:
-            # API keys byVariable by the full DCID as sent; fall back to bare name
+            norm = _normalise_dcid(dcid)
             entity_block = (
-                by_variable.get(dcid, {})
+                by_variable.get(norm, {})
+                or by_variable.get(dcid, {})
                 or by_variable.get(dcid.split("/")[-1], {})
             ).get("byEntity", {}).get(entity_dcid, {})
 
