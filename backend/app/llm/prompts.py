@@ -28,7 +28,9 @@ Classify claim_type:
   like "reduced", "caused", "impact of", "effect of", "due to", "led to"
 
 Be conservative: only include indicators and SDGs supported by the text.
-Use submit_claim_extraction to return the structured result."""
+Use submit_claim_extraction to return the structured result.
+
+Always reason and think in English. All output, reasoning, and thinking processes must be strictly in English."""
 
 CLAIM_EXTRACTION_USER = """Source URL: {source_url}
 Document title hint: {title_hint}

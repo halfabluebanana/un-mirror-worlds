@@ -20,13 +20,13 @@ DATACOMMONS_BASE_URL = (
 )
 SDG_METADATA_API_URL = "https://unstats.un.org/SDGMetadataAPI/api/Metadata/SDMXReport"
 
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "anthropic")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openrouter")
 LLM_EXTRACTION_ENABLED = os.getenv("LLM_EXTRACTION_ENABLED", "true").lower() in (
     "1",
     "true",
     "yes",
 )
 
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
-ANTHROPIC_API_URL = os.getenv("ANTHROPIC_API_URL", "https://api.anthropic.com")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-flash")
+OPENROUTER_API_URL = os.getenv("OPENROUTER_API_URL", "https://openrouter.ai/api/v1")

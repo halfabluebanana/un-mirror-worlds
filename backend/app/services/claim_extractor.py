@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 import httpx
 from bs4 import BeautifulSoup
 
-from app.llm.factory import get_llm_provider
+from app.llm import is_llm_configured
 from app.models import IndicatorProvenance, IndicatorRef, ReportClaim, SdgRef
 from app.services.datacommons import DataCommonsClient
 from app.services.llm_claim_extractor import extract_claim_with_llm
@@ -379,10 +379,10 @@ def extract_claim(
     if not text or not text.strip():
         raise ValueError("Provide a URL or paste report text to analyze.")
 
-    provider = get_llm_provider()
-    should_use_llm = use_llm if use_llm is not None else provider is not None
+    configured = is_llm_configured()
+    should_use_llm = use_llm if use_llm is not None else configured
 
-    if should_use_llm and provider is not None:
+    if should_use_llm and configured:
         try:
             claim, method = extract_claim_with_llm(
                 text,

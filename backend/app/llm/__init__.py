@@ -1,3 +1,3 @@
-from app.llm.factory import get_llm_provider
+from app.llm.openrouter import get_structured_completion, is_llm_configured
 
-__all__ = ["get_llm_provider"]
+__all__ = ["get_structured_completion", "is_llm_configured"]

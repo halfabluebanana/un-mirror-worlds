@@ -2,9 +2,8 @@ import hashlib
 from typing import Optional
 
 from app.llm.drafts import LlmClaimDraft, LlmIndicatorDraft
-from app.llm.factory import get_llm_provider
+from app.llm import get_structured_completion, is_llm_configured
 from app.llm.prompts import CLAIM_EXTRACTION_SYSTEM, CLAIM_EXTRACTION_USER
-from app.llm.base import LLMMessage
 from app.models import IndicatorProvenance, IndicatorRef, ReportClaim, SdgRef
 from app.services.datacommons import DataCommonsClient
 
@@ -106,8 +105,7 @@ def extract_claim_with_llm(
     source_url: Optional[str] = None,
     title_hint: Optional[str] = None,
 ) -> tuple[ReportClaim, str]:
-    provider = get_llm_provider()
-    if provider is None:
+    if not is_llm_configured():
         raise RuntimeError("LLM extraction is not configured")
 
     user_prompt = CLAIM_EXTRACTION_USER.format(
@@ -116,29 +114,25 @@ def extract_claim_with_llm(
         document=_truncate(document_text),
     )
 
-    draft = provider.structured_completion(
-        [
-            LLMMessage(role="system", content=CLAIM_EXTRACTION_SYSTEM),
-            LLMMessage(role="user", content=user_prompt),
-        ],
+    draft = get_structured_completion(
+        CLAIM_EXTRACTION_SYSTEM,
+        user_prompt,
         LlmClaimDraft,
-        tool_name=TOOL_NAME,
     )
 
     seed = source_url or document_text[:200]
     claim = _enrich_draft(draft, seed, source_url)
-    method = f"llm_{provider.name}"
-    return claim, method
+    return claim, "llm_openrouter"
 
 
 def llm_extraction_status() -> dict:
-    from app.config import ANTHROPIC_MODEL, LLM_EXTRACTION_ENABLED, LLM_PROVIDER
+    from app.config import OPENROUTER_MODEL, LLM_EXTRACTION_ENABLED, LLM_PROVIDER
 
-    provider = get_llm_provider()
+    configured = is_llm_configured()
     return {
-        "enabled": provider is not None,
-        "provider": provider.name if provider else LLM_PROVIDER,
-        "model": getattr(provider, "_model", ANTHROPIC_MODEL) if provider else ANTHROPIC_MODEL,
+        "enabled": configured,
+        "provider": "openrouter" if configured else LLM_PROVIDER,
+        "model": OPENROUTER_MODEL,
         "llm_extraction_enabled": LLM_EXTRACTION_ENABLED,
-        "api_key_configured": bool(getattr(provider, "_api_key", "")) if provider else False,
+        "api_key_configured": configured,
     }
