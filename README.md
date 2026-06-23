@@ -56,7 +56,7 @@ backend (Flask, port 8000)
     ↕
 UN Data Commons REST API   ← live indicator observations + facet metadata
 Historical twin database   ← validated SDG case studies for comparison
-LLM claim extractor        ← structured extraction from report URLs/text (Claude)
+LLM claim extractor        ← structured extraction from report URLs/text (OpenRouter)
 SDG custodian metadata     ← indicator-level limitations and coverage notes
 ```
 
@@ -66,13 +66,15 @@ SDG custodian metadata     ← indicator-level limitations and coverage notes
 
 ### 1. Backend (port 8000)
 
+Requires [uv](https://github.com/astral-sh/uv) to manage requirements and run the application.
+
 ```bash
 cd backend
-cp .env.example .env          # edit ANTHROPIC_API_KEY if you want LLM extraction
+cp .env.example .env          # edit OPENROUTER_API_KEY if you want LLM extraction
 ./run.sh
 ```
 
-Works without an API key — falls back to heuristic extraction. Deep LLM extraction requires `ANTHROPIC_API_KEY` in `backend/.env`.
+Works without an API key — falls back to heuristic extraction. Deep LLM extraction requires `OPENROUTER_API_KEY` in `backend/.env`.
 
 ### 2. Frontend (port 4200)
 
