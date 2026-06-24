@@ -8,6 +8,8 @@ We do this by creating standardized schema for storing a case study itself, allo
 
 Mirror Worlds then is able to evaluate reports given to the app by grading the data hygiene using the linked studies as reference, and bringing up *historican twins* to present similar scenarios to the user for consideration. 
 
+Project pitch presentation: https://docs.google.com/presentation/d/1sappht5ImfCf8PXNAu3fBjJhBkRHM30i/edit?usp=sharing&ouid=115590818787153355766&rtpof=true&sd=true
+
 ---
 
 ## The problem
