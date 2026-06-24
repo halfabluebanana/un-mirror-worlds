@@ -1,10 +1,12 @@
-# Mirror Worlds — Data Suitability & Confidence
+# Mirror Worlds
 
-> **UN Tech Over Hackathon 2026 · Challenge 2: Trust, QA & Fitness for Purpose**
+Policy decisions get made on data that decision makers can't fully evaluate. Sources like the UN Data Commons allow us to use verified, traceable data for our reports, but it's still difficult to assess the quality of a report and whether the data sources used are appropriate, comprehensive, and relevant to the problem at hand. We have a rich source of good practices and methodology in case studies published by organizations like the UN, which would be valuable for policymakers when trying to make decisions based on data.
 
-Policy decisions get made on data that decision makers can't fully evaluate. Analysts pick indicators, blend sources, and write reports — but the methodology trail goes cold. The data's origins, limitations, and fitness for the specific claim being made are buried in footnotes or lost entirely.
+Mirror Worlds tries to help in the monitoring & evaluation phase for reports by trying by indexing these case studies, and presenting ones similar to the problem the user is trying to solve (by SDGs addressed, administrative region, indicators targeted for improvement, and sources used).
 
-Mirror Worlds makes that trail visible. It evaluates SDG report claims against UN Data Commons observations, historical methodology twins, and custodian metadata, then outputs a standardised **Data Suitability & Confidence** label — modelled on the nutrition facts paradigm — that travels with the analysis.
+We do this by creating standardized schema for storing a case study itself, allowing us to scrape them from the internet and create a database. 
+
+Mirror Worlds then is able to evaluate reports given to the app by grading the data hygiene using the linked studies as reference, and bringing up *historican twins* to present similar scenarios to the user for consideration. 
 
 ---
 
@@ -12,13 +14,11 @@ Mirror Worlds makes that trail visible. It evaluates SDG report claims against U
 
 When a policy report says *"child poverty in Somalia is X%"*, five things are usually unknown to the decision maker:
 
-1. **Source provenance** — which agency produced this, using what method?
-2. **Methodology fitness** — is a national-level modelled estimate appropriate for a municipal intervention decision?
-3. **Missing indicators** — what data *should* have been included but wasn't?
-4. **Data currency** — how old is the underlying data relative to the claim?
-5. **Claim type mismatch** — is the report making a causal claim ("this policy reduced poverty") with only observational data?
-
-These aren't edge cases. They're the norm in SDG reporting, and they compound: a report with slightly wrong indicators, slightly stale data, and a slightly overstated causal claim can produce significantly wrong policy.
+1. **Source provenance**: which agency produced this, using what method?
+2. **Methodology fitness**: is a national-level modelled estimate appropriate for a municipal intervention decision?
+3. **Missing indicators**: what data *should* have been included but wasn't?
+4. **Data currency**: how old is the underlying data relative to the claim?
+5. **Claim type mismatch**: is the report making a causal claim ("this policy reduced poverty") with only observational data?
 
 ---
 
