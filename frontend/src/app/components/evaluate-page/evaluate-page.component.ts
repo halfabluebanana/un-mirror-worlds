@@ -7,10 +7,8 @@ import {
   EvaluationLabel,
   ExtractionConfig,
   ReportClaim,
-  TwinSummary,
 } from '../../models/evaluation.model';
 import { NutritionLabelComponent } from '../nutrition-label/nutrition-label.component';
-import { TwinPanelComponent } from '../twin-panel/twin-panel.component';
 import { IndicatorPanelComponent } from '../indicator-panel/indicator-panel.component';
 
 type InputMode = 'demo' | 'url' | 'text';
@@ -18,7 +16,7 @@ type InputMode = 'demo' | 'url' | 'text';
 @Component({
   selector: 'app-evaluate-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NutritionLabelComponent, TwinPanelComponent, IndicatorPanelComponent],
+  imports: [CommonModule, FormsModule, NutritionLabelComponent, IndicatorPanelComponent],
   template: `
     <main class="page">
       <section class="hero">
@@ -134,8 +132,6 @@ type InputMode = 'demo' | 'url' | 'text';
       </section>
 
       <section class="layout">
-        <app-twin-panel [twins]="twins"></app-twin-panel>
-
         <div class="result-column">
           <section class="claim-card" *ngIf="activeClaim">
             <h2>Extracted claim schema</h2>
@@ -326,7 +322,7 @@ type InputMode = 'demo' | 'url' | 'text';
 
       .layout {
         display: grid;
-        grid-template-columns: 320px 1fr;
+        grid-template-columns: 1fr;
         gap: 1.25rem;
         align-items: start;
       }
@@ -419,7 +415,6 @@ type InputMode = 'demo' | 'url' | 'text';
   ],
 })
 export class EvaluatePageComponent implements OnInit {
-  twins: TwinSummary[] = [];
   claims: ReportClaim[] = [];
   inputMode: InputMode = 'url';
 
@@ -443,11 +438,6 @@ export class EvaluatePageComponent implements OnInit {
   constructor(private readonly api: ApiService) {}
 
   ngOnInit(): void {
-    this.api.getTwins().subscribe({
-      next: (twins) => (this.twins = twins),
-      error: () => (this.error = 'Could not load historical twins. Is the API running?'),
-    });
-
     this.api.getDemoClaims().subscribe({
       next: (claims) => {
         this.claims = claims;
