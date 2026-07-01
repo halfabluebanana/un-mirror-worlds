@@ -118,6 +118,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
       border-radius: 0;
       padding: 0.4rem 0.75rem;
       font: inherit;
+      font-family: system-ui, -apple-system, sans-serif;
       font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
@@ -140,6 +141,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
     .tab-badge {
       font-size: 0.68rem;
       font-weight: 700;
+      font-family: system-ui, -apple-system, sans-serif;
       text-transform: uppercase;
       background: rgba(0,0,0,0.10);
       border-radius: 0;
@@ -173,6 +175,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
 
     .card-label {
       font-size: 0.72rem;
+      font-family: system-ui, -apple-system, sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--muted);
@@ -188,7 +191,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
     .card-dcid {
       font-size: 0.72rem;
       color: var(--muted);
-      font-family: monospace;
+      font-family: system-ui, -apple-system, sans-serif;
       margin: 0;
     }
 
