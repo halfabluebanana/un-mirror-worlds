@@ -175,7 +175,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
 
     .card-label {
       font-size: 0.72rem;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: Georgia, 'Book Antiqua', Palatino, serif;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--muted);
