@@ -200,6 +200,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
       background: #d1fae5;
       color: #065f46;
       white-space: nowrap;
+      font-family: system-ui, -apple-system, sans-serif;
     }
 
     .availability.unavailable {
@@ -237,6 +238,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
     .field-value {
       font-size: 0.88rem;
       font-weight: 600;
+      font-family: system-ui, -apple-system, sans-serif;
     }
 
     .obs-count {
@@ -266,6 +268,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
       background: #fef9e7;
       border-top: 2px solid #DDA63A;
       color: #5a3c00;
+      font-family: system-ui, -apple-system, sans-serif;
     }
 
     .no-data-flag {
