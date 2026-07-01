@@ -24,9 +24,9 @@ type InputMode = 'demo' | 'url' | 'text';
           <p class="eyebrow">Mirror Worlds demo</p>
           <h1>Data Suitability &amp; Confidence</h1>
           <p>
-            Paste a case study URL, free text, or use a demo claim. The backend
-            extracts SDGs, geography, indicators, and sources, then scores the
-            claim against historical twins and UN Data Commons.
+            UN policy reports make claims like "child poverty in Somalia is 73%" — but rarely show whether the underlying data is reliable enough to act on.
+            This tool checks those claims: it looks up the actual UN data sources, tests how well they match what the report says, and gives you a confidence score.
+            Paste a report URL or text below, or try one of the preloaded examples to see it in action.
           </p>
         </div>
 
