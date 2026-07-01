@@ -185,6 +185,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
     .card-name {
       font-weight: 700;
       font-size: 0.95rem;
+      font-family: system-ui, -apple-system, sans-serif;
       margin: 0 0 0.15rem;
     }
 
