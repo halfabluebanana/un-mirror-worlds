@@ -33,7 +33,7 @@ import { ObservationPoint } from '../../models/evaluation.model';
             <p class="card-dcid">{{ active.dcid }}</p>
           </div>
           <div class="availability" [class.unavailable]="!active.data_available">
-            {{ active.data_available ? 'Data available' : 'No DC data' }}
+            {{ active.data_available ? 'Data available' : 'Not in UN Data Commons' }}
           </div>
         </div>
 

@@ -28,6 +28,14 @@ type InputMode = 'demo' | 'url' | 'text';
             This tool checks those claims: it looks up the actual UN data sources, tests how well they match what the report says, and gives you a confidence score.
             Paste a report URL or text below, or try one of the preloaded examples to see it in action.
           </p>
+          <p class="problem-heading">Five things usually unknown to the decision maker:</p>
+          <ul class="problem-list">
+            <li><strong>Source provenance</strong> — which agency produced this data, using what method?</li>
+            <li><strong>Methodology fitness</strong> — is a national-level estimate appropriate for a local decision?</li>
+            <li><strong>Missing indicators</strong> — what data should have been included but wasn't?</li>
+            <li><strong>Data currency</strong> — how old is the underlying data relative to the claim?</li>
+            <li><strong>Claim type mismatch</strong> — is a causal claim being made with only observational data?</li>
+          </ul>
         </div>
 
         <div class="hero-card">
@@ -166,6 +174,17 @@ type InputMode = 'demo' | 'url' | 'text';
           <div class="label-wrap">
             <app-nutrition-label [label]="label" (scoreClicked)="scrollToPanel()"></app-nutrition-label>
           </div>
+
+          <section class="score-legend" *ngIf="label">
+            <h3 class="legend-title">What each confidence score measures</h3>
+            <dl class="legend-grid">
+              <div><dt>Indicator correlation</dt><dd>Do the declared indicators actually measure the target outcome?</dd></div>
+              <div><dt>Indicator comprehensiveness</dt><dd>What standard indicators are missing vs. comparable analyses?</dd></div>
+              <div><dt>Indicator source variance</dt><dd>Do different sources agree on the same indicator?</dd></div>
+              <div><dt>Geographic resolution fit</dt><dd>Does the data granularity support the stated analysis level?</dd></div>
+              <div><dt>Reference period fit</dt><dd>Is the data current enough for the claim's target year?</dd></div>
+            </dl>
+          </section>
 
           <app-indicator-panel
             *ngIf="label"
@@ -404,10 +423,71 @@ type InputMode = 'demo' | 'url' | 'text';
         padding-top: 0.75rem;
       }
 
+      .problem-heading {
+        margin: 1rem 0 0.35rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+        font-family: Georgia, 'Book Antiqua', Palatino, serif;
+      }
+
+      .problem-list {
+        margin: 0;
+        padding-left: 1.1rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.6;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+
+      .problem-list strong {
+        color: var(--ink);
+        font-family: Georgia, 'Book Antiqua', Palatino, serif;
+      }
+
+      .score-legend {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        padding: 1rem 1.25rem;
+      }
+
+      .legend-title {
+        margin: 0 0 0.75rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        font-family: Georgia, 'Book Antiqua', Palatino, serif;
+      }
+
+      .legend-grid {
+        display: grid;
+        gap: 0.5rem;
+        margin: 0;
+      }
+
+      .legend-grid div {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 0.75rem;
+        font-size: 0.82rem;
+      }
+
+      .legend-grid dt {
+        font-weight: 600;
+        color: var(--ink);
+        font-family: Georgia, 'Book Antiqua', Palatino, serif;
+        font-size: 0.82rem;
+      }
+
+      .legend-grid dd {
+        margin: 0;
+        color: var(--muted);
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+
       @media (max-width: 900px) {
         .hero,
         .layout,
-        dl div {
+        dl div,
+        .legend-grid div {
           grid-template-columns: 1fr;
         }
       }
