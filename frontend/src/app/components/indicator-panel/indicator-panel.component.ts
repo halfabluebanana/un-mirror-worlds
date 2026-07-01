@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ObservationPoint } from '../../models/evaluation.model';
 
@@ -11,18 +11,25 @@ import { ObservationPoint } from '../../models/evaluation.model';
       <h3 class="panel-title">Indicator methodology cards</h3>
 
       <div class="tab-strip">
-        <button
-          *ngFor="let obs of observations"
-          type="button"
-          class="tab-btn"
-          [class.active]="activeTab === obs.dcid"
-          [class.no-data]="!obs.data_available"
-          (click)="selectTab(obs.dcid)"
-        >
-          {{ shortName(obs) }}
-          <span class="tab-badge" *ngIf="!obs.data_available">no data</span>
-          <span class="tab-badge shared" *ngIf="isShared(obs)">shared source</span>
-        </button>
+        <div class="tab-wrapper" *ngFor="let obs of observations">
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activeTab === obs.dcid"
+            [class.no-data]="!obs.data_available"
+            (click)="selectTab(obs.dcid)"
+          >
+            {{ shortName(obs) }}
+            <span class="tab-badge" *ngIf="!obs.data_available">no data</span>
+            <span class="tab-badge shared" *ngIf="isShared(obs)">shared source</span>
+            <button type="button" class="info-btn" (click)="toggleTooltip(obs.dcid, $event)" aria-label="What is this indicator?">ⓘ</button>
+          </button>
+          <div class="info-tooltip" *ngIf="tooltipDcid === obs.dcid">
+            <strong *ngIf="obs.name && obs.name !== obs.dcid">{{ obs.name }}</strong>
+            <span class="tooltip-code">{{ obs.dcid }}</span>
+            <a [href]="dcUrl(obs.dcid)" target="_blank" rel="noreferrer">Look up on UN Data Commons ↗</a>
+          </div>
+        </div>
       </div>
 
       <div class="card" *ngIf="active">
@@ -110,6 +117,60 @@ import { ObservationPoint } from '../../models/evaluation.model';
       flex-wrap: wrap;
       gap: 0.4rem;
       margin-bottom: 1rem;
+    }
+
+    .tab-wrapper {
+      position: relative;
+    }
+
+    .info-btn {
+      background: none;
+      border: none;
+      padding: 0 0 0 0.3rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
+    .info-btn:hover {
+      color: var(--ink);
+    }
+
+    .info-tooltip {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 100;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      padding: 0.75rem;
+      min-width: 220px;
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.78rem;
+    }
+
+    .tooltip-code {
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .info-tooltip a {
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      margin-top: 0.15rem;
+    }
+
+    .info-tooltip a:hover {
+      color: var(--accent-2);
     }
 
     .tab-btn {
@@ -295,6 +356,22 @@ export class IndicatorPanelComponent implements OnChanges {
   activeTab: string | null = null;
   active: ObservationPoint | null = null;
   sharedAgencies: Set<string> = new Set();
+  tooltipDcid: string | null = null;
+
+  @HostListener('document:click')
+  closeTooltip(): void {
+    this.tooltipDcid = null;
+  }
+
+  toggleTooltip(dcid: string, event: Event): void {
+    event.stopPropagation();
+    this.tooltipDcid = this.tooltipDcid === dcid ? null : dcid;
+  }
+
+  dcUrl(dcid: string): string {
+    const svId = dcid.replace('undata/', '');
+    return `https://datacommons.org/tools/statvar#sv=${encodeURIComponent(svId)}`;
+  }
 
   ngOnChanges(): void {
     this.computeSharedAgencies();
